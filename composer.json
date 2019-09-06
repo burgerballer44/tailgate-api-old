@@ -1,0 +1,30 @@
+{
+    "minimum-stability": "dev",
+    "prefer-stable": true,
+    "require": {
+        "slim/slim": "^4.0.0",
+        "slim/psr7": "^0.3.0",
+        "php-di/php-di": "^6.0",
+        "burger/tailgate": "dev-master",
+        "league/tactician": "^1.0",
+        "respect/validation": "^1.1",
+        "vlucas/phpdotenv": "^3.4",
+        "bshaffer/oauth2-server-php": "^1.10",
+        "monolog/monolog": "^1.24",
+        "robmorgan/phinx": "^0.11.1"
+    },
+    "autoload": {
+        "psr-4": {
+            "TailgateApi\\": "src/"
+        }
+    },
+    "repositories": [
+        {
+            "type": "vcs",
+            "url": "https://github.com/burgerballer44/tailgate"
+        }
+    ],
+    "require-dev": {
+        "fzaninotto/faker": "^1.8"
+    }
+}
