@@ -13,6 +13,7 @@ use Tailgate\Application\Validator\FollowTeamCommandValidator;
 use Tailgate\Application\Validator\AddGameCommandValidator;
 use Tailgate\Application\Validator\AddGameScoreCommandValidator;
 use Tailgate\Application\Validator\CreateSeasonCommandValidator;
+use Tailgate\Application\Validator\UpdatePasswordCommandValidator;
 
 return function (App $app) {
 
@@ -70,6 +71,9 @@ return function (App $app) {
     });
     $container->set('CreateSeasonCommandValidator', function ($container) {
         return new CreateSeasonCommandValidator();
+    });
+        $container->set('UpdatePasswordCommandValidator', function ($container) {
+        return new UpdatePasswordCommandValidator();
     });
 
 };

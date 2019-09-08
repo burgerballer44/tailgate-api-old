@@ -70,12 +70,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/burgerballer44/tailgate.git",
-                "reference": "298fcc2a0c94675fd781ff20891f1c68a4907a6e"
+                "reference": "b9b9fed614339f79b957c4693772dcfc26363a9f"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/burgerballer44/tailgate/zipball/298fcc2a0c94675fd781ff20891f1c68a4907a6e",
-                "reference": "298fcc2a0c94675fd781ff20891f1c68a4907a6e",
+                "url": "https://api.github.com/repos/burgerballer44/tailgate/zipball/b9b9fed614339f79b957c4693772dcfc26363a9f",
+                "reference": "b9b9fed614339f79b957c4693772dcfc26363a9f",
                 "shasum": ""
             },
             "require": {
@@ -112,10 +112,10 @@
             ],
             "description": "score prediction with friends",
             "support": {
-                "source": "https://github.com/burgerballer44/tailgate/tree/dev",
+                "source": "https://github.com/burgerballer44/tailgate/tree/master",
                 "issues": "https://github.com/burgerballer44/tailgate/issues"
             },
-            "time": "2019-09-06T00:51:32+00:00"
+            "time": "2019-09-08T00:27:34+00:00"
         },
         {
             "name": "buttercup/protects",
@@ -712,16 +712,16 @@
         },
         {
             "name": "monolog/monolog",
-            "version": "1.24.0",
+            "version": "1.25.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/Seldaek/monolog.git",
-                "reference": "bfc9ebb28f97e7a24c45bdc3f0ff482e47bb0266"
+                "reference": "70e65a5470a42cfec1a7da00d30edb6e617e8dcf"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Seldaek/monolog/zipball/bfc9ebb28f97e7a24c45bdc3f0ff482e47bb0266",
-                "reference": "bfc9ebb28f97e7a24c45bdc3f0ff482e47bb0266",
+                "url": "https://api.github.com/repos/Seldaek/monolog/zipball/70e65a5470a42cfec1a7da00d30edb6e617e8dcf",
+                "reference": "70e65a5470a42cfec1a7da00d30edb6e617e8dcf",
                 "shasum": ""
             },
             "require": {
@@ -786,7 +786,7 @@
                 "logging",
                 "psr-3"
             ],
-            "time": "2018-11-05T09:00:11+00:00"
+            "time": "2019-09-06T13:49:17+00:00"
         },
         {
             "name": "nikic/fast-route",

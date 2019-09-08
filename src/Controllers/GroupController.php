@@ -99,7 +99,7 @@ class GroupController extends ApiController
         // if ($validator->assert($command)) {
             $this->container->get('commandBus')->handle($command);
             return $response;
-        }
+        // }
 
         // return $this->respondWithValidationError($response, $validator->errors());
     }

@@ -32,6 +32,20 @@ class TailgatePDOStorage extends Pdo
         return $result && $this->passwordHashing->verify($client_secret, $result['client_secret']);
     }
 
+
+    public function getUser($email)
+    {
+        $stmt = $this->db->prepare($sql = sprintf('SELECT * from %s where email=:email', $this->config['user_table']));
+        $stmt->execute(['email' => $email]);
+
+        if (!$userInfo = $stmt->fetch(\PDO::FETCH_ASSOC)) {
+            return false;
+        }
+
+        // the default behavior is to use "email" as the user_id
+        return array_merge(['user_id' => $email], $userInfo);
+    }
+
     public function getDefaultScope($client_id = null)
     {
         return null;

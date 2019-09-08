@@ -11,6 +11,7 @@ use OAuth2\Server;
 use OAuth2\GrantType\UserCredentials;
 use OAuth2\GrantType\ClientCredentials;
 use TailgateApi\Auth\TailgatePDOStorage;
+use TailgateApi\Auth\TailgateUserCredentials;
 
 use TailgateApi\Middleware\GuardMiddleware;
 
@@ -48,6 +49,7 @@ use Tailgate\Infrastructure\Persistence\ViewRepository\PDO\SeasonViewRepository;
 
 use Tailgate\Application\DataTransformer\UserViewArrayDataTransformer;
 use Tailgate\Application\DataTransformer\MemberViewArrayDataTransformer;
+use Tailgate\Application\DataTransformer\PlayerViewArrayDataTransformer;
 use Tailgate\Application\DataTransformer\ScoreViewArrayDataTransformer;
 use Tailgate\Application\DataTransformer\GroupViewArrayDataTransformer;
 use Tailgate\Application\DataTransformer\TeamViewArrayDataTransformer;
@@ -113,7 +115,7 @@ return function (App $app) {
         $server->addGrantType(new OAuth2\GrantType\ClientCredentials($storage));
 
         // Add the "User Credentials" grant type (1st party apps)
-        $server->addGrantType(new OAuth2\GrantType\UserCredentials($storage));
+        $server->addGrantType(new TailgateUserCredentials($storage));
 
         return $server;
     });
@@ -294,6 +296,12 @@ return function (App $app) {
     $container->set('transformer.member', function ($container) {
         return $container->get('transformer.member.array');
     });
+    $container->set('transformer.player.array', function ($container) {
+        return new PlayerViewArrayDataTransformer();
+    });
+    $container->set('transformer.player', function ($container) {
+        return $container->get('transformer.player.array');
+    });
     $container->set('transformer.score.array', function ($container) {
         return new ScoreViewArrayDataTransformer();
     });
@@ -303,6 +311,7 @@ return function (App $app) {
     $container->set('transformer.group.array', function ($container) {
         return new GroupViewArrayDataTransformer(
             $container->get('transformer.member'),
+            $container->get('transformer.player'),
             $container->get('transformer.score')
         );
     });

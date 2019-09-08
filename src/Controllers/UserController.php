@@ -68,6 +68,22 @@ class UserController extends ApiController
     }
 
     // developer
+    public function userPatch(ServerRequestInterface $request, ResponseInterface $response, $args)
+    {
+        $userId = $args['userId'];
+        $parsedBody = $request->getParsedBody();
+
+        $command = new UpdateUserCommand(
+            $userId,
+            $parsedBody['email'] ?? '',
+            $parsedBody['status'] ?? '',
+            $parsedBody['role'] ?? ''
+        );
+        $this->container->get('commandBus')->handle($command);
+        return $response;
+    }
+
+    // developer
     public function delete(ServerRequestInterface $request, ResponseInterface $response, $args)
     {
         $userId = $args['userId'];
@@ -97,25 +113,17 @@ class UserController extends ApiController
 
         $command = new UpdatePasswordCommand(
             $userId,
-            $parsedBody['password'] ?? ''
+            $parsedBody['password'] ?? '',
+            $parsedBody['confirm_password'] ?? ''
         );
-        $this->container->get('commandBus')->handle($command);
-        return $response;
-    }
+        
+        $validator = $this->container->get('validationInflector')->getValidatorClass($command);
+        
+        if ($validator->assert($command)) {
+            $this->container->get('commandBus')->handle($command);
+            return $response;
+        }
 
-    // developer
-    public function userPatch(ServerRequestInterface $request, ResponseInterface $response, $args)
-    {
-        $userId = $args['userId'];
-        $parsedBody = $request->getParsedBody();
-
-        $command = new UpdateUserCommand(
-            $userId,
-            $parsedBody['email'] ?? '',
-            $parsedBody['status'] ?? '',
-            $parsedBody['role'] ?? '',
-        );
-        $this->container->get('commandBus')->handle($command);
-        return $response;
+        return $this->respondWithValidationError($response, $validator->errors());
     }
 }
