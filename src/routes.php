@@ -35,12 +35,12 @@ return function (App $app) {
             $group->patch('/{groupId}', \TailgateApi\Controllers\GroupController::class . ':groupPatch');
             $group->delete('/{groupId}', \TailgateApi\Controllers\GroupController::class . ':groupDelete');
             $group->post('/{groupId}/member', \TailgateApi\Controllers\GroupController::class . ':memberPost');
-            $group->patch('/{groupId}/member', \TailgateApi\Controllers\GroupController::class . ':memberPatch');
+            $group->patch('/{groupId}/member/{memberId}', \TailgateApi\Controllers\GroupController::class . ':memberPatch');
             $group->delete('/{groupId}/member/{memberId}', \TailgateApi\Controllers\GroupController::class . ':memberDelete');
-            $group->post('/{groupId}/player', \TailgateApi\Controllers\GroupController::class . ':playerPost');
-            $group->post('/{groupId}/score', \TailgateApi\Controllers\GroupController::class . ':scorePost');
+            $group->post('/{groupId}/member/{memberId}/player', \TailgateApi\Controllers\GroupController::class . ':playerPost');
+            $group->post('/{groupId}/player/{playerId}/score', \TailgateApi\Controllers\GroupController::class . ':scorePost');
             $group->delete('/{groupId}/score/{scoreId}', \TailgateApi\Controllers\GroupController::class . ':scoreDelete');
-            $group->patch('/{groupId}/score', \TailgateApi\Controllers\GroupController::class . ':scorePatch');
+            $group->patch('/{groupId}/score/{scoreId}', \TailgateApi\Controllers\GroupController::class . ':scorePatch');
         });
 
         // team
@@ -64,6 +64,7 @@ return function (App $app) {
             $group->post('/{seasonId}/game', \TailgateApi\Controllers\SeasonController::class . ':gamePost');
             $group->patch('/{seasonId}/game/{gameId}/score', \TailgateApi\Controllers\SeasonController::class . ':updateGameScorePatch');
             $group->delete('/{seasonId}/game/{gameId}', \TailgateApi\Controllers\SeasonController::class . ':gameDelete');
+            
 
         });
 

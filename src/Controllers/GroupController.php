@@ -69,7 +69,7 @@ class GroupController extends ApiController
         $parsedBody = $request->getParsedBody();
 
         $command = new AddMemberToGroupCommand(
-            $group_id,
+            $groupId,
             $parsedBody['user_id'] ?? ''
         );
 
@@ -86,11 +86,12 @@ class GroupController extends ApiController
     public function playerPost(ServerRequestInterface $request, ResponseInterface $response, $args)
     {
         $groupId = $args['groupId'];
+        $memberId = $args['memberId'];
         $parsedBody = $request->getParsedBody();
 
         $command = new AddPlayerToGroupCommand(
-            $group_id,
-            $parsedBody['member_id'] ?? '',
+            $groupId,
+            $memberId,
             $parsedBody['username'] ?? ''
         );
 
@@ -110,12 +111,12 @@ class GroupController extends ApiController
     public function scorePost(ServerRequestInterface $request, ResponseInterface $response, $args)
     {
         $groupId = $args['groupId'];
-        $userId = $request->getAttribute('user_id');
+        $playerId = $args['playerId'];
         $parsedBody = $request->getParsedBody();
 
         $command = new SubmitScoreForGroupCommand(
             $groupId,
-            $userId,
+            $playerId,
             $parsedBody['game_id'],
             $parsedBody['home_team_prediction'],
             $parsedBody['away_team_prediction']
@@ -187,13 +188,14 @@ class GroupController extends ApiController
     // 
     public function groupPatch(ServerRequestInterface $request, ResponseInterface $response, $args)
     {
-        $groupId = $request->getAttribute('groupId');
+        $userId = $request->getAttribute('user_id');
+        $groupId = $args['groupId'];
         $parsedBody = $request->getParsedBody();
 
         $command = new UpdateGroupCommand(
             $groupId,
             $parsedBody['name'],
-            $parsedBody['userId']
+            $userId
         );
 
         // $validator = $this->container->get('validationInflector')->getValidatorClass($command);
@@ -209,14 +211,15 @@ class GroupController extends ApiController
     // 
     public function memberPatch(ServerRequestInterface $request, ResponseInterface $response, $args)
     {
-        $groupId = $request->getAttribute('groupId');
-        $memberId = $request->getAttribute('memberId');
+        $groupId = $args['groupId'];
+        $memberId = $args['memberId'];
         $parsedBody = $request->getParsedBody();
 
         $command = new UpdateMemberCommand(
             $groupId,
             $memberId,
-            $parsedBody['groupRole']
+            $parsedBody['group_role'],
+            $parsedBody['allow_multiple'],
         );
 
         // $validator = $this->container->get('validationInflector')->getValidatorClass($command);
@@ -239,8 +242,8 @@ class GroupController extends ApiController
         $command = new UpdateScoreForGroupCommand(
             $groupId,
             $scoreId,
-            $parsedBody['homeTeamPrediction'],
-            $parsedBody['awayTeamPrediction']
+            $parsedBody['home_team_prediction'],
+            $parsedBody['away_team_prediction']
         );
 
         // $validator = $this->container->get('validationInflector')->getValidatorClass($command);

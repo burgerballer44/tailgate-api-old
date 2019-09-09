@@ -150,10 +150,10 @@ class SeasonController extends ApiController
         $command = new UpdateSeasonCommand(
             $seasonId,
             $parsedBody['sport'] ?? '',
-            $parsedBody['seasonType'] ?? '',
+            $parsedBody['season_type'] ?? '',
             $parsedBody['name'] ?? '',
-            $parsedBody['seasonStart'] ?? '',
-            $parsedBody['seasonEnd'] ?? ''
+            $parsedBody['season_start'] ?? '',
+            $parsedBody['season_end'] ?? ''
         );
 
         // $validator = $this->container->get('validationInflector')->getValidatorClass($command);

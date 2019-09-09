@@ -117,6 +117,7 @@ class TeamController extends ApiController
         $parsedBody = $request->getParsedBody();
 
         $command = new UpdateTeamCommand(
+            $teamId,
             $parsedBody['designation'] ?? '',
             $parsedBody['mascot'] ?? ''
         );
