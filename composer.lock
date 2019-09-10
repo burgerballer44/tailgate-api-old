@@ -70,12 +70,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/burgerballer44/tailgate.git",
-                "reference": "c7efd10cf684d84e5d874353049247c63b73948e"
+                "reference": "ea7a5abc07cb4eab41f8983f8925cc3839e9cadf"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/burgerballer44/tailgate/zipball/c7efd10cf684d84e5d874353049247c63b73948e",
-                "reference": "c7efd10cf684d84e5d874353049247c63b73948e",
+                "url": "https://api.github.com/repos/burgerballer44/tailgate/zipball/ea7a5abc07cb4eab41f8983f8925cc3839e9cadf",
+                "reference": "ea7a5abc07cb4eab41f8983f8925cc3839e9cadf",
                 "shasum": ""
             },
             "require": {
@@ -115,7 +115,7 @@
                 "source": "https://github.com/burgerballer44/tailgate/tree/master",
                 "issues": "https://github.com/burgerballer44/tailgate/issues"
             },
-            "time": "2019-09-09T01:00:33+00:00"
+            "time": "2019-09-10T23:00:25+00:00"
         },
         {
             "name": "buttercup/protects",
@@ -2452,16 +2452,16 @@
         },
         {
             "name": "vlucas/phpdotenv",
-            "version": "v3.5.0",
+            "version": "v3.6.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/vlucas/phpdotenv.git",
-                "reference": "95cb0fa6c025f7f0db7fc60f81e9fb231eb2d222"
+                "reference": "1bdf24f065975594f6a117f0f1f6cabf1333b156"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/vlucas/phpdotenv/zipball/95cb0fa6c025f7f0db7fc60f81e9fb231eb2d222",
-                "reference": "95cb0fa6c025f7f0db7fc60f81e9fb231eb2d222",
+                "url": "https://api.github.com/repos/vlucas/phpdotenv/zipball/1bdf24f065975594f6a117f0f1f6cabf1333b156",
+                "reference": "1bdf24f065975594f6a117f0f1f6cabf1333b156",
                 "shasum": ""
             },
             "require": {
@@ -2470,12 +2470,12 @@
                 "symfony/polyfill-ctype": "^1.9"
             },
             "require-dev": {
-                "phpunit/phpunit": "^4.8.35 || ^5.0 || ^6.0"
+                "phpunit/phpunit": "^4.8.35 || ^5.0 || ^6.0 || ^7.0"
             },
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "3.5-dev"
+                    "dev-master": "3.6-dev"
                 }
             },
             "autoload": {
@@ -2505,7 +2505,7 @@
                 "env",
                 "environment"
             ],
-            "time": "2019-08-27T17:00:38+00:00"
+            "time": "2019-09-10T21:37:39+00:00"
         }
     ],
     "packages-dev": [

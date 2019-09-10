@@ -96,14 +96,14 @@ class SeasonController extends ApiController
             $parsedBody['away_team_score'] ?? ''
         );
 
-        $validator = $this->container->get('validationInflector')->getValidatorClass($command);
+        // $validator = $this->container->get('validationInflector')->getValidatorClass($command);
 
-        if ($validator->assert($command)) {
+        // if ($validator->assert($command)) {
             $this->container->get('commandBus')->handle($command);
             return $response;
-        }
+        // }
 
-        return $this->respondWithValidationError($response, $validator->errors());
+        // return $this->respondWithValidationError($response, $validator->errors());
     }
 
     //

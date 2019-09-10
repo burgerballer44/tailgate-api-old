@@ -41,10 +41,18 @@ return function (App $app) {
             ),
             AllGroupsQuery::class => new AllGroupsQueryHandler($container->get('viewRepository.group'), $container->get('transformer.group')),
             
-            TeamQuery::class => new TeamQueryHandler($container->get('viewRepository.team'), $container->get('transformer.team')),
+            TeamQuery::class => new TeamQueryHandler(
+                $container->get('viewRepository.team'),
+                $container->get('viewRepository.follow'),
+                $container->get('transformer.team')
+            ),
             AllTeamsQuery::class => new AllTeamsQueryHandler($container->get('viewRepository.team'), $container->get('transformer.team')),
             
-            SeasonQuery::class => new SeasonQueryHandler($container->get('viewRepository.season'), $container->get('transformer.season')),
+            SeasonQuery::class => new SeasonQueryHandler(
+                $container->get('viewRepository.season'),
+                $container->get('viewRepository.game'),
+                $container->get('transformer.season')
+            ),
             AllSeasonsQuery::class => new AllSeasonsQueryHandler($container->get('viewRepository.season'), $container->get('transformer.season')),
         ]);
     });

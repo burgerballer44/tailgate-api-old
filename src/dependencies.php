@@ -45,7 +45,9 @@ use Tailgate\Infrastructure\Persistence\ViewRepository\PDO\MemberViewRepository;
 use Tailgate\Infrastructure\Persistence\ViewRepository\PDO\PlayerViewRepository;
 use Tailgate\Infrastructure\Persistence\ViewRepository\PDO\ScoreViewRepository;
 use Tailgate\Infrastructure\Persistence\ViewRepository\PDO\TeamViewRepository;
+use Tailgate\Infrastructure\Persistence\ViewRepository\PDO\FollowViewRepository;
 use Tailgate\Infrastructure\Persistence\ViewRepository\PDO\SeasonViewRepository;
+use Tailgate\Infrastructure\Persistence\ViewRepository\PDO\GameViewRepository;
 
 use Tailgate\Application\DataTransformer\UserViewArrayDataTransformer;
 use Tailgate\Application\DataTransformer\MemberViewArrayDataTransformer;
@@ -53,7 +55,9 @@ use Tailgate\Application\DataTransformer\PlayerViewArrayDataTransformer;
 use Tailgate\Application\DataTransformer\ScoreViewArrayDataTransformer;
 use Tailgate\Application\DataTransformer\GroupViewArrayDataTransformer;
 use Tailgate\Application\DataTransformer\TeamViewArrayDataTransformer;
+use Tailgate\Application\DataTransformer\FollowViewArrayDataTransformer;
 use Tailgate\Application\DataTransformer\SeasonViewArrayDataTransformer;
+use Tailgate\Application\DataTransformer\GameViewArrayDataTransformer;
 
 return function (App $app) {
 
@@ -226,60 +230,58 @@ return function (App $app) {
 
     // view repositories
     $container->set('viewRepository.user.pdo', function ($container) {
-        return new UserViewRepository(
-            $container->get('pdo')
-        );
+        return new UserViewRepository($container->get('pdo'));
     });
     $container->set('viewRepository.user', function ($container) {
         return $container->get('viewRepository.user.pdo');
     });
     $container->set('viewRepository.group.pdo', function ($container) {
-        return new GroupViewRepository(
-            $container->get('pdo')
-        );
+        return new GroupViewRepository($container->get('pdo'));
     });
     $container->set('viewRepository.group', function ($container) {
         return $container->get('viewRepository.group.pdo');
     });
     $container->set('viewRepository.member.pdo', function ($container) {
-        return new MemberViewRepository(
-            $container->get('pdo')
-        );
+        return new MemberViewRepository($container->get('pdo'));
     });
     $container->set('viewRepository.member', function ($container) {
         return $container->get('viewRepository.member.pdo');
     });
     $container->set('viewRepository.player.pdo', function ($container) {
-        return new PlayerViewRepository(
-            $container->get('pdo')
-        );
+        return new PlayerViewRepository($container->get('pdo'));
     });
     $container->set('viewRepository.player', function ($container) {
         return $container->get('viewRepository.player.pdo');
     });
     $container->set('viewRepository.score.pdo', function ($container) {
-        return new ScoreViewRepository(
-            $container->get('pdo')
-        );
+        return new ScoreViewRepository($container->get('pdo'));
     });
     $container->set('viewRepository.score', function ($container) {
         return $container->get('viewRepository.score.pdo');
     });
     $container->set('viewRepository.team.pdo', function ($container) {
-        return new TeamViewRepository(
-            $container->get('pdo')
-        );
+        return new TeamViewRepository($container->get('pdo'));
     });
     $container->set('viewRepository.team', function ($container) {
         return $container->get('viewRepository.team.pdo');
     });
+    $container->set('viewRepository.follow.pdo', function ($container) {
+        return new FollowViewRepository($container->get('pdo'));
+    });
+    $container->set('viewRepository.follow', function ($container) {
+        return $container->get('viewRepository.follow.pdo');
+    });
     $container->set('viewRepository.season.pdo', function ($container) {
-        return new SeasonViewRepository(
-            $container->get('pdo')
-        );
+        return new SeasonViewRepository($container->get('pdo'));
     });
     $container->set('viewRepository.season', function ($container) {
         return $container->get('viewRepository.season.pdo');
+    });
+    $container->set('viewRepository.game.pdo', function ($container) {
+        return new GameViewRepository($container->get('pdo'));
+    });
+    $container->set('viewRepository.game', function ($container) {
+        return $container->get('viewRepository.game.pdo');
     });
 
 
@@ -318,14 +320,26 @@ return function (App $app) {
     $container->set('transformer.group', function ($container) {
         return $container->get('transformer.group.array');
     });
+    $container->set('transformer.follow.array', function ($container) {
+        return new FollowViewArrayDataTransformer();
+    });
+    $container->set('transformer.follow', function ($container) {
+        return $container->get('transformer.follow.array');
+    });
     $container->set('transformer.team.array', function ($container) {
-        return new TeamViewArrayDataTransformer();
+        return new TeamViewArrayDataTransformer($container->get('transformer.follow'));
     });
     $container->set('transformer.team', function ($container) {
         return $container->get('transformer.team.array');
     });
+    $container->set('transformer.game.array', function ($container) {
+        return new GameViewArrayDataTransformer();
+    });
+    $container->set('transformer.game', function ($container) {
+        return $container->get('transformer.game.array');
+    });
     $container->set('transformer.season.array', function ($container) {
-        return new SeasonViewArrayDataTransformer();
+        return new SeasonViewArrayDataTransformer($container->get('transformer.game'));
     });
     $container->set('transformer.season', function ($container) {
         return $container->get('transformer.season.array');
