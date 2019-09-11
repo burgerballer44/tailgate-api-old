@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "180b66320725f3194ef3dd06411e9f8b",
+    "content-hash": "c61ba65669e300f5cbfa8d234c736e1e",
     "packages": [
         {
             "name": "bshaffer/oauth2-server-php",
@@ -70,20 +70,19 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/burgerballer44/tailgate.git",
-                "reference": "ea7a5abc07cb4eab41f8983f8925cc3839e9cadf"
+                "reference": "91068140119f757d165dd36e994a6a8046c64ddd"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/burgerballer44/tailgate/zipball/ea7a5abc07cb4eab41f8983f8925cc3839e9cadf",
-                "reference": "ea7a5abc07cb4eab41f8983f8925cc3839e9cadf",
+                "url": "https://api.github.com/repos/burgerballer44/tailgate/zipball/91068140119f757d165dd36e994a6a8046c64ddd",
+                "reference": "91068140119f757d165dd36e994a6a8046c64ddd",
                 "shasum": ""
             },
             "require": {
                 "buttercup/protects": "dev-master",
                 "mathiasverraes/classfunctions": "1.*",
                 "php": "^7.1.3",
-                "ramsey/uuid": "^3.8",
-                "respect/validation": "^1.1"
+                "ramsey/uuid": "^3.8"
             },
             "require-dev": {
                 "friendsofphp/php-cs-fixer": "^2.15",
@@ -112,10 +111,10 @@
             ],
             "description": "score prediction with friends",
             "support": {
-                "source": "https://github.com/burgerballer44/tailgate/tree/master",
+                "source": "https://github.com/burgerballer44/tailgate/tree/dev",
                 "issues": "https://github.com/burgerballer44/tailgate/issues"
             },
-            "time": "2019-09-10T23:00:25+00:00"
+            "time": "2019-09-11T02:45:40+00:00"
         },
         {
             "name": "buttercup/protects",
@@ -2508,58 +2507,7 @@
             "time": "2019-09-10T21:37:39+00:00"
         }
     ],
-    "packages-dev": [
-        {
-            "name": "fzaninotto/faker",
-            "version": "v1.8.0",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/fzaninotto/Faker.git",
-                "reference": "f72816b43e74063c8b10357394b6bba8cb1c10de"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/fzaninotto/Faker/zipball/f72816b43e74063c8b10357394b6bba8cb1c10de",
-                "reference": "f72816b43e74063c8b10357394b6bba8cb1c10de",
-                "shasum": ""
-            },
-            "require": {
-                "php": "^5.3.3 || ^7.0"
-            },
-            "require-dev": {
-                "ext-intl": "*",
-                "phpunit/phpunit": "^4.8.35 || ^5.7",
-                "squizlabs/php_codesniffer": "^1.5"
-            },
-            "type": "library",
-            "extra": {
-                "branch-alias": {
-                    "dev-master": "1.8-dev"
-                }
-            },
-            "autoload": {
-                "psr-4": {
-                    "Faker\\": "src/Faker/"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "François Zaninotto"
-                }
-            ],
-            "description": "Faker is a PHP library that generates fake data for you.",
-            "keywords": [
-                "data",
-                "faker",
-                "fixtures"
-            ],
-            "time": "2018-07-12T10:23:15+00:00"
-        }
-    ],
+    "packages-dev": [],
     "aliases": [],
     "minimum-stability": "dev",
     "stability-flags": {

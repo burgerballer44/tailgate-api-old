@@ -23,8 +23,5 @@
             "type": "vcs",
             "url": "https://github.com/burgerballer44/tailgate"
         }
-    ],
-    "require-dev": {
-        "fzaninotto/faker": "^1.8"
-    }
+    ]
 }
