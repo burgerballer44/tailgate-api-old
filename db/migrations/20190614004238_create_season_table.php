@@ -13,9 +13,9 @@ class CreateSeasonTable extends AbstractMigration
             'signed' => false
         ]);
         $season->addColumn('season_id', 'string', ['limit' => 36])
+            ->addColumn('name', 'string', ['limit' => 100])
             ->addColumn('sport', 'string', ['limit' => 50])
             ->addColumn('type', 'string', ['limit' => 50])
-            ->addColumn('name', 'string', ['limit' => 100])
             ->addColumn('season_start', 'datetime')
             ->addColumn('season_end', 'datetime')
             ->addColumn('created_at', 'datetime')

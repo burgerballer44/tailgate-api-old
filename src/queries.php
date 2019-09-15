@@ -44,6 +44,7 @@ return function (App $app) {
             TeamQuery::class => new TeamQueryHandler(
                 $container->get('viewRepository.team'),
                 $container->get('viewRepository.follow'),
+                $container->get('viewRepository.game'),
                 $container->get('transformer.team')
             ),
             AllTeamsQuery::class => new AllTeamsQueryHandler($container->get('viewRepository.team'), $container->get('transformer.team')),

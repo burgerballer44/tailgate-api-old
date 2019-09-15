@@ -15,6 +15,7 @@ class CreateScoreTable extends AbstractMigration
         $score->addColumn('score_id', 'string', ['limit' => 36])
             ->addColumn('group_id', 'string', ['limit' => 36])
             ->addColumn('player_id', 'string', ['limit' => 36])
+            ->addColumn('member_id', 'string', ['limit' => 36])
             ->addColumn('game_id', 'string', ['limit' => 36])
             ->addColumn('home_team_prediction', 'integer')
             ->addColumn('away_team_prediction', 'integer')

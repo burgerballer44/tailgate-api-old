@@ -13,6 +13,8 @@ use Tailgate\Application\Command\Group\DeleteGroupCommand;
 use Tailgate\Application\Command\Group\DeleteGroupHandler;
 use Tailgate\Application\Command\Group\DeleteMemberCommand;
 use Tailgate\Application\Command\Group\DeleteMemberHandler;
+use Tailgate\Application\Command\Group\DeletePlayerCommand;
+use Tailgate\Application\Command\Group\DeletePlayerHandler;
 use Tailgate\Application\Command\Group\DeleteScoreCommand;
 use Tailgate\Application\Command\Group\DeleteScoreHandler;
 use Tailgate\Application\Command\Group\SubmitScoreForGroupCommand;
@@ -73,6 +75,7 @@ return function (App $app) {
             CreateGroupCommand::class => new CreateGroupHandler($container->get('repository.group')),
             DeleteGroupCommand::class => new DeleteGroupHandler($container->get('repository.group')),
             DeleteMemberCommand::class => new DeleteMemberHandler($container->get('repository.group')),
+            DeletePlayerCommand::class => new DeletePlayerHandler($container->get('repository.group')),
             DeleteScoreCommand::class => new DeleteScoreHandler($container->get('repository.group')),
             SubmitScoreForGroupCommand::class => new SubmitScoreForGroupHandler($container->get('repository.group')),
             UpdateGroupCommand::class => new UpdateGroupHandler($container->get('repository.group')),

@@ -3,6 +3,7 @@
 namespace TailgateApi\Auth;
 
 use OAuth2\Storage\Pdo;
+use Tailgate\Domain\Model\User\User;
 
 // extend oauth2 PDO implementation since we need our implementations
 class TailgatePDOStorage extends Pdo
@@ -35,10 +36,15 @@ class TailgatePDOStorage extends Pdo
 
     public function getUser($email)
     {
-        $stmt = $this->db->prepare($sql = sprintf('SELECT * from %s where email=:email', $this->config['user_table']));
+        $stmt = $this->db->prepare($sql = sprintf('SELECT * FROM %s WHERE email=:email', $this->config['user_table']));
         $stmt->execute(['email' => $email]);
 
         if (!$userInfo = $stmt->fetch(\PDO::FETCH_ASSOC)) {
+            return false;
+        }
+
+        // return false if the user is not active
+        if (User::STATUS_ACTIVE != $userInfo['status']) {
             return false;
         }
 

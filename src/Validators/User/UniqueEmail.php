@@ -9,21 +9,29 @@ use Tailgate\Domain\Model\User\UserViewRepositoryInterface;
 class UniqueEmail extends AbstractRule
 {
     private $userViewRepository;
+    private $userId;
 
-    public function __construct(UserViewRepositoryInterface $userViewRepository)
+    public function __construct(UserViewRepositoryInterface $userViewRepository, $userId = false)
     {
         $this->userViewRepository = $userViewRepository;
+        $this->userId = $userId;
     }
 
     /**
-     * returns false when the user exists by the email
+     * returns false when the user exists by email 
+     * if userId property is set then the userView userId is checked
      * @param  [type] $input [description]
      * @return [type]        [description]
      */
     public function validate($input)
     {
-        $user = $this->userViewRepository->byEmail($input);
+        $userView = $this->userViewRepository->byEmail($input);
 
-        return false == $user;
+        // return true if we want to allow the userId to bypass check if it is their own email
+        if ($this->userId) {
+            return $this->userId === $userView->getUserId();
+        }
+
+        return false == $userView;
     }
 }

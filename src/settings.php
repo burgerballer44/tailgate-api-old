@@ -8,6 +8,8 @@ return function (App $app) {
 
     $container = $app->getContainer();
 
+    $today = (new \DateTime())->format('Y-m-d');
+
     // load environment variables from .env file in api root directory
     $dotenv = Dotenv::create(dirname(__DIR__));
     $dotenv->load();
@@ -45,7 +47,7 @@ return function (App $app) {
         // logger
         'logger' => [
             'name' => 'tailgate-api',
-            'path' => __DIR__ . '/../logs/app.log',
+            'path' => __DIR__ . "/../logs/app-{$today}.log",
             'level' => Logger::DEBUG,
         ],
 

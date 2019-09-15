@@ -21,7 +21,6 @@ class UserController extends ApiController
     public function all(ServerRequestInterface $request, ResponseInterface $response, $args)
     {
         $users =  $this->container->get('queryBus')->handle(new AllUsersQuery());
-        $this->logger->info("All users were viewed");
         return $this->respondWithData($response, $users);
     }
 
@@ -31,7 +30,6 @@ class UserController extends ApiController
     {
         $userId = $args['userId'];
         $user = $this->container->get('queryBus')->handle(new UserQuery($userId));
-        $this->logger->info("User of id `${userId}` was viewed.");
         return $this->respondWithData($response, $user);
     }
     
@@ -60,11 +58,19 @@ class UserController extends ApiController
     public function activate(ServerRequestInterface $request, ResponseInterface $response, $args)
     {
         $userId = $args['userId'];
-        $params = $request->getQueryParams();
-
+        $params = $request->getParsedBody();
         $email = $params['email'];
-        $this->container->get('commandBus')->handle(new ActivateUserCommand($userId));
-        return $response;
+
+        $command = new ActivateUserCommand($userId);
+
+        $validator = $this->container->get('validationInflector')->getValidatorClass($command);
+        
+        if ($validator->assert($command)) {
+            $this->container->get('commandBus')->handle($command);
+            return $response;
+        }
+        
+        return $this->respondWithValidationError($response, $validator->errors());
     }
 
     // developer
@@ -79,8 +85,15 @@ class UserController extends ApiController
             $parsedBody['status'] ?? '',
             $parsedBody['role'] ?? ''
         );
-        $this->container->get('commandBus')->handle($command);
-        return $response;
+
+        $validator = $this->container->get('validationInflector')->getValidatorClass($command);
+        
+        if ($validator->assert($command)) {
+            $this->container->get('commandBus')->handle($command);
+            return $response;
+        }
+        
+        return $this->respondWithValidationError($response, $validator->errors());
     }
 
     // developer
@@ -101,8 +114,15 @@ class UserController extends ApiController
             $userId,
             $parsedBody['email'] ?? ''
         );
-        $this->container->get('commandBus')->handle($command);
-        return $response;
+
+        $validator = $this->container->get('validationInflector')->getValidatorClass($command);
+        
+        if ($validator->assert($command)) {
+            $this->container->get('commandBus')->handle($command);
+            return $response;
+        }
+        
+        return $this->respondWithValidationError($response, $validator->errors());
     }
 
     // anyone can update their own password

@@ -12,6 +12,7 @@ use Tailgate\Application\Command\Group\AddPlayerToGroupCommand;
 use Tailgate\Application\Command\Group\CreateGroupCommand;
 use Tailgate\Application\Command\Group\DeleteGroupCommand;
 use Tailgate\Application\Command\Group\DeleteMemberCommand;
+use Tailgate\Application\Command\Group\DeletePlayerCommand;
 use Tailgate\Application\Command\Group\DeleteScoreCommand;
 use Tailgate\Application\Command\Group\SubmitScoreForGroupCommand;
 use Tailgate\Application\Command\Group\UpdateGroupCommand;
@@ -156,6 +157,24 @@ class GroupController extends ApiController
         $memberId = $args['memberId'];
 
         $command = new DeleteMemberCommand($groupId, $memberId);
+
+        // $validator = $this->container->get('validationInflector')->getValidatorClass($command);
+        
+        // if ($validator->assert($command)) {
+            $this->container->get('commandBus')->handle($command);
+            return $response;
+        // }
+
+        // return $this->respondWithValidationError($response, $validator->errors());
+    }
+
+    // 
+    public function playerDelete(ServerRequestInterface $request, ResponseInterface $response, $args)
+    {
+        $groupId = $args['groupId'];
+        $playerId = $args['playerId'];
+
+        $command = new DeletePlayerCommand($groupId, $playerId);
 
         // $validator = $this->container->get('validationInflector')->getValidatorClass($command);
         

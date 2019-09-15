@@ -41,9 +41,9 @@ class SeasonController extends ApiController
         $parsedBody = $request->getParsedBody();
 
         $command = new CreateSeasonCommand(
+            $parsedBody['name'] ?? '',
             $parsedBody['sport'] ?? '',
             $parsedBody['season_type'] ?? '',
-            $parsedBody['name'] ?? '',
             $parsedBody['season_start'] ?? '',
             $parsedBody['season_end'] ?? ''
         );
