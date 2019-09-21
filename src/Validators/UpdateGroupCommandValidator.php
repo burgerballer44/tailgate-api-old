@@ -8,7 +8,7 @@ use Tailgate\Domain\Model\Group\GroupViewRepositoryInterface;
 use TailgateApi\Validators\Group\GroupExist;
 use TailgateApi\Validators\User\UserExist;
 
-class AddMemberToGroupCommandValidator extends AbstractRespectValidator
+class UpdateGroupCommandValidator extends AbstractRespectValidator
 {
     private $userViewRepository;
     private $groupViewRepository;
@@ -26,7 +26,8 @@ class AddMemberToGroupCommandValidator extends AbstractRespectValidator
         V::with("TailgateApi\Validators\User\\");
         V::with("TailgateApi\Validators\Group\\");
 
+        $this->rules['name'] = V::notEmpty()->alnum()->noWhitespace()->length(4, 30)->setName('Name');
         $this->rules['groupId'] = V::notEmpty()->stringType()->GroupExist($this->groupViewRepository)->setName('Group');
-        $this->rules['userId'] = V::notEmpty()->stringType()->UserExist($this->userViewRepository)->setName('Owner');
+        $this->rules['ownerId'] = V::notEmpty()->stringType()->UserExist($this->userViewRepository)->setName('Owner');
     }
 }

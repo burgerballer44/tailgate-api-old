@@ -6,35 +6,28 @@ use Respect\Validation\Validator as V;
 use Tailgate\Domain\Model\Group\Group;
 use TailgateApi\Validators\Group\GroupExist;
 use Tailgate\Domain\Model\Group\GroupViewRepositoryInterface;
-use Tailgate\Domain\Model\Group\PlayerViewRepositoryInterface;
-use TailgateApi\Validators\Group\PlayerExist;
-use Tailgate\Domain\Model\Season\GameViewRepositoryInterface;
-use TailgateApi\Validators\Season\GameExist;
+use TailgateApi\Validators\Group\ScoreExist;
+use Tailgate\Domain\Model\Group\ScoreViewRepositoryInterface;
 
-class SubmitScoreForGroupCommandValidator extends AbstractRespectValidator
+class UpdateScoreForGroupCommandValidator extends AbstractRespectValidator
 {
     private $groupViewRepository;
-    private $playerViewRepository;
-    private $gameViewRepository;
+    private $scoreViewRepository;
 
     public function __construct(
         GroupViewRepositoryInterface $groupViewRepository,
-        PlayerViewRepositoryInterface $playerViewRepository,
-        GameViewRepositoryInterface $gameViewRepository
+        ScoreViewRepositoryInterface $scoreViewRepository
     ) {
         $this->groupViewRepository = $groupViewRepository;
-        $this->playerViewRepository = $playerViewRepository;
-        $this->gameViewRepository = $gameViewRepository;
+        $this->scoreViewRepository = $scoreViewRepository;
     }
 
     protected function addRules($command)
     {
-        V::with("TailgateApi\Validators\Season\\");
         V::with("TailgateApi\Validators\Group\\");
 
         $this->rules['groupId'] = V::notEmpty()->GroupExist($this->groupViewRepository)->setName('Group');
-        $this->rules['playerId'] = V::notEmpty()->PlayerExist($this->playerViewRepository)->setName('Player');
-        $this->rules['gameId'] = V::notEmpty()->GameExist($this->gameViewRepository)->setName('Game');
+        $this->rules['scoreId'] = V::notEmpty()->ScoreExist($this->scoreViewRepository)->setName('Score');
         $this->rules['homeTeamPrediction'] = V::notEmpty()->intVal()->min(0)->setName('Home Team Prediction');
         $this->rules['awayTeamPrediction'] = V::notEmpty()->intVal()->min(0)->setName('Away Team Prediction');
     }

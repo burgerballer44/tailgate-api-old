@@ -41,7 +41,7 @@ class UserController extends ApiController
         $command = new RegisterUserCommand(
             $parsedBody['email'] ?? '',
             $parsedBody['password'] ?? '',
-            $parsedBody['confirm_password'] ?? ''
+            $parsedBody['confirmPassword'] ?? ''
         );
 
         $validator = $this->container->get('validationInflector')->getValidatorClass($command);
@@ -134,7 +134,7 @@ class UserController extends ApiController
         $command = new UpdatePasswordCommand(
             $userId,
             $parsedBody['password'] ?? '',
-            $parsedBody['confirm_password'] ?? ''
+            $parsedBody['confirmPassword'] ?? ''
         );
         
         $validator = $this->container->get('validationInflector')->getValidatorClass($command);

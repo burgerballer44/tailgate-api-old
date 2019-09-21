@@ -61,7 +61,7 @@ class TeamController extends ApiController
         $parsedBody = $request->getParsedBody();
 
         $command = new FollowTeamCommand(
-            $parsedBody['group_id'] ?? '',
+            $parsedBody['groupId'] ?? '',
             $teamId
         );
 
@@ -82,14 +82,8 @@ class TeamController extends ApiController
 
         $command = new DeleteTeamCommand($teamId);
 
-        // $validator = $this->container->get('validationInflector')->getValidatorClass($command);
-        
-        // if ($validator->assert($command)) {
-            $this->container->get('commandBus')->handle($command);
-            return $response;
-        // }
-
-        // return $this->respondWithValidationError($response, $validator->errors());
+        $this->container->get('commandBus')->handle($command);
+        return $response;
     }
 
     //
@@ -100,14 +94,8 @@ class TeamController extends ApiController
 
         $command = new DeleteFollowCommand($teamId, $followId);
 
-        // $validator = $this->container->get('validationInflector')->getValidatorClass($command);
-        
-        // if ($validator->assert($command)) {
-            $this->container->get('commandBus')->handle($command);
-            return $response;
-        // }
-
-        // return $this->respondWithValidationError($response, $validator->errors());
+        $this->container->get('commandBus')->handle($command);
+        return $response;
     }
 
     //
@@ -122,13 +110,13 @@ class TeamController extends ApiController
             $parsedBody['mascot'] ?? ''
         );
 
-        // $validator = $this->container->get('validationInflector')->getValidatorClass($command);
+        $validator = $this->container->get('validationInflector')->getValidatorClass($command);
         
-        // if ($validator->assert($command)) {
+        if ($validator->assert($command)) {
             $this->container->get('commandBus')->handle($command);
             return $response;
-        // }
+        }
 
-        // return $this->respondWithValidationError($response, $validator->errors());
+        return $this->respondWithValidationError($response, $validator->errors());
     }
 }

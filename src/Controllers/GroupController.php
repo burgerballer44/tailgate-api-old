@@ -71,7 +71,7 @@ class GroupController extends ApiController
 
         $command = new AddMemberToGroupCommand(
             $groupId,
-            $parsedBody['user_id'] ?? ''
+            $parsedBody['userId'] ?? ''
         );
 
         $validator = $this->container->get('validationInflector')->getValidatorClass($command);
@@ -96,14 +96,14 @@ class GroupController extends ApiController
             $parsedBody['username'] ?? ''
         );
 
-        // $validator = $this->container->get('validationInflector')->getValidatorClass($command);
+        $validator = $this->container->get('validationInflector')->getValidatorClass($command);
         
-        // if ($validator->assert($command)) {
+        if ($validator->assert($command)) {
             $this->container->get('commandBus')->handle($command);
             return $response;
-        // }
+        }
 
-        // return $this->respondWithValidationError($response, $validator->errors());
+        return $this->respondWithValidationError($response, $validator->errors());
     }
 
     // admin - can submit a score for anyone
@@ -118,9 +118,9 @@ class GroupController extends ApiController
         $command = new SubmitScoreForGroupCommand(
             $groupId,
             $playerId,
-            $parsedBody['game_id'],
-            $parsedBody['home_team_prediction'],
-            $parsedBody['away_team_prediction']
+            $parsedBody['gameId'],
+            $parsedBody['homeTeamPrediction'],
+            $parsedBody['awayTeamPrediction']
         );
 
         $validator = $this->container->get('validationInflector')->getValidatorClass($command);
@@ -139,15 +139,9 @@ class GroupController extends ApiController
         $groupId = $args['groupId'];
 
         $command = new DeleteGroupCommand($groupId);
+        $this->container->get('commandBus')->handle($command);
+        return $response;
 
-        // $validator = $this->container->get('validationInflector')->getValidatorClass($command);
-        
-        // if ($validator->assert($command)) {
-            $this->container->get('commandBus')->handle($command);
-            return $response;
-        // }
-
-        // return $this->respondWithValidationError($response, $validator->errors());
     }
 
     // 
@@ -157,15 +151,8 @@ class GroupController extends ApiController
         $memberId = $args['memberId'];
 
         $command = new DeleteMemberCommand($groupId, $memberId);
-
-        // $validator = $this->container->get('validationInflector')->getValidatorClass($command);
-        
-        // if ($validator->assert($command)) {
-            $this->container->get('commandBus')->handle($command);
-            return $response;
-        // }
-
-        // return $this->respondWithValidationError($response, $validator->errors());
+        $this->container->get('commandBus')->handle($command);
+        return $response;
     }
 
     // 
@@ -175,15 +162,8 @@ class GroupController extends ApiController
         $playerId = $args['playerId'];
 
         $command = new DeletePlayerCommand($groupId, $playerId);
-
-        // $validator = $this->container->get('validationInflector')->getValidatorClass($command);
-        
-        // if ($validator->assert($command)) {
-            $this->container->get('commandBus')->handle($command);
-            return $response;
-        // }
-
-        // return $this->respondWithValidationError($response, $validator->errors());
+        $this->container->get('commandBus')->handle($command);
+        return $response;
     }
 
     // 
@@ -193,15 +173,8 @@ class GroupController extends ApiController
         $scoreId = $args['scoreId'];
 
         $command = new DeleteScoreCommand($groupId, $scoreId);
-
-        // $validator = $this->container->get('validationInflector')->getValidatorClass($command);
-        
-        // if ($validator->assert($command)) {
-            $this->container->get('commandBus')->handle($command);
-            return $response;
-        // }
-
-        // return $this->respondWithValidationError($response, $validator->errors());
+        $this->container->get('commandBus')->handle($command);
+        return $response;;
     }
 
     // 
@@ -217,14 +190,14 @@ class GroupController extends ApiController
             $userId
         );
 
-        // $validator = $this->container->get('validationInflector')->getValidatorClass($command);
+        $validator = $this->container->get('validationInflector')->getValidatorClass($command);
         
-        // if ($validator->assert($command)) {
+        if ($validator->assert($command)) {
             $this->container->get('commandBus')->handle($command);
             return $response;
-        // }
+        }
 
-        // return $this->respondWithValidationError($response, $validator->errors());
+        return $this->respondWithValidationError($response, $validator->errors());
     }
 
     // 
@@ -237,18 +210,18 @@ class GroupController extends ApiController
         $command = new UpdateMemberCommand(
             $groupId,
             $memberId,
-            $parsedBody['group_role'],
-            $parsedBody['allow_multiple'],
+            $parsedBody['groupRole'],
+            $parsedBody['allowMultiple'],
         );
 
-        // $validator = $this->container->get('validationInflector')->getValidatorClass($command);
+        $validator = $this->container->get('validationInflector')->getValidatorClass($command);
         
-        // if ($validator->assert($command)) {
+        if ($validator->assert($command)) {
             $this->container->get('commandBus')->handle($command);
             return $response;
-        // }
+        }
 
-        // return $this->respondWithValidationError($response, $validator->errors());
+        return $this->respondWithValidationError($response, $validator->errors());
     }
 
     // 
@@ -261,17 +234,17 @@ class GroupController extends ApiController
         $command = new UpdateScoreForGroupCommand(
             $groupId,
             $scoreId,
-            $parsedBody['home_team_prediction'],
-            $parsedBody['away_team_prediction']
+            $parsedBody['homeTeamPrediction'],
+            $parsedBody['awayTeamPrediction']
         );
 
-        // $validator = $this->container->get('validationInflector')->getValidatorClass($command);
+        $validator = $this->container->get('validationInflector')->getValidatorClass($command);
         
-        // if ($validator->assert($command)) {
+        if ($validator->assert($command)) {
             $this->container->get('commandBus')->handle($command);
             return $response;
-        // }
+        }
 
-        // return $this->respondWithValidationError($response, $validator->errors());
+        return $this->respondWithValidationError($response, $validator->errors());
     }
 }

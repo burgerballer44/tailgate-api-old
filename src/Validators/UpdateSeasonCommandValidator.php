@@ -4,11 +4,23 @@ namespace TailgateApi\Validators;
 
 use Respect\Validation\Validator as V;
 use Tailgate\Domain\Model\Season\Season;
+use TailgateApi\Validators\Season\SeasonExist;
+use Tailgate\Domain\Model\Season\SeasonViewRepositoryInterface;
 
-class CreateSeasonCommandValidator extends AbstractRespectValidator
+class UpdateSeasonCommandValidator extends AbstractRespectValidator
 {
+    private $seasonViewRepository;
+
+    public function __construct(SeasonViewRepositoryInterface $seasonViewRepository)
+    {
+        $this->seasonViewRepository = $seasonViewRepository;
+    }
+
     protected function addRules($command)
     {
+        V::with("TailgateApi\Validators\Season\\");
+
+        $this->rules['seasonId'] = V::notEmpty()->SeasonExist($this->seasonViewRepository)->setName('Season');
         $this->rules['name'] = V::notEmpty()->alnum()->noWhitespace()->length(4, 100)->setName('Name');
         $this->rules['sport'] = V::notEmpty()->in(Season::getValidSports())->setName('Sport');
         $this->rules['seasonType'] = V::notEmpty()->in(Season::getValidSeasonTypes())->setName('Season Type');

@@ -43,9 +43,9 @@ class SeasonController extends ApiController
         $command = new CreateSeasonCommand(
             $parsedBody['name'] ?? '',
             $parsedBody['sport'] ?? '',
-            $parsedBody['season_type'] ?? '',
-            $parsedBody['season_start'] ?? '',
-            $parsedBody['season_end'] ?? ''
+            $parsedBody['seasonType'] ?? '',
+            $parsedBody['seasonStart'] ?? '',
+            $parsedBody['seasonEnd'] ?? ''
         );
 
         $validator = $this->container->get('validationInflector')->getValidatorClass($command);
@@ -66,9 +66,9 @@ class SeasonController extends ApiController
 
         $command = new AddGameCommand(
             $seasonId,
-            $parsedBody['home_team_id'] ?? '',
-            $parsedBody['away_team_id'] ?? '',
-            $parsedBody['start_date'] ?? ''
+            $parsedBody['homeTeamId'] ?? '',
+            $parsedBody['awayTeamId'] ?? '',
+            $parsedBody['startDate'] ?? ''
         );
 
         $validator = $this->container->get('validationInflector')->getValidatorClass($command);
@@ -92,18 +92,18 @@ class SeasonController extends ApiController
         $command = new UpdateGameScoreCommand(
             $seasonId,
             $gameId,
-            $parsedBody['home_team_score'] ?? '',
-            $parsedBody['away_team_score'] ?? ''
+            $parsedBody['homeTeamScore'] ?? '',
+            $parsedBody['awayTeamScore'] ?? ''
         );
 
-        // $validator = $this->container->get('validationInflector')->getValidatorClass($command);
+        $validator = $this->container->get('validationInflector')->getValidatorClass($command);
 
-        // if ($validator->assert($command)) {
+        if ($validator->assert($command)) {
             $this->container->get('commandBus')->handle($command);
             return $response;
-        // }
+        }
 
-        // return $this->respondWithValidationError($response, $validator->errors());
+        return $this->respondWithValidationError($response, $validator->errors());
     }
 
     //
@@ -112,15 +112,8 @@ class SeasonController extends ApiController
         $seasonId = $args['seasonId'];
         
         $command = new DeleteSeasonCommand($seasonId);
-
-        // $validator = $this->container->get('validationInflector')->getValidatorClass($command);
-
-        // if ($validator->assert($command)) {
-            $this->container->get('commandBus')->handle($command);
-            return $response;
-        // }
-
-        // return $this->respondWithValidationError($response, $validator->errors());
+        $this->container->get('commandBus')->handle($command);
+        return $response;
     }
 
     //
@@ -130,15 +123,8 @@ class SeasonController extends ApiController
         $gameId = $args['gameId'];
         
         $command = new DeleteGameCommand($seasonId, $gameId);
-
-        // $validator = $this->container->get('validationInflector')->getValidatorClass($command);
-
-        // if ($validator->assert($command)) {
-            $this->container->get('commandBus')->handle($command);
-            return $response;
-        // }
-
-        // return $this->respondWithValidationError($response, $validator->errors());
+        $this->container->get('commandBus')->handle($command);
+        return $response;
     }
 
     //
@@ -149,20 +135,20 @@ class SeasonController extends ApiController
         
         $command = new UpdateSeasonCommand(
             $seasonId,
-            $parsedBody['sport'] ?? '',
-            $parsedBody['season_type'] ?? '',
             $parsedBody['name'] ?? '',
-            $parsedBody['season_start'] ?? '',
-            $parsedBody['season_end'] ?? ''
+            $parsedBody['sport'] ?? '',
+            $parsedBody['seasonType'] ?? '',
+            $parsedBody['seasonStart'] ?? '',
+            $parsedBody['seasonEnd'] ?? ''
         );
 
-        // $validator = $this->container->get('validationInflector')->getValidatorClass($command);
+        $validator = $this->container->get('validationInflector')->getValidatorClass($command);
 
-        // if ($validator->assert($command)) {
+        if ($validator->assert($command)) {
             $this->container->get('commandBus')->handle($command);
             return $response;
-        // }
+        }
 
-        // return $this->respondWithValidationError($response, $validator->errors());
+        return $this->respondWithValidationError($response, $validator->errors());
     }
 }
