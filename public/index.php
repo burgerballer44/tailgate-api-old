@@ -1,6 +1,6 @@
 <?php
 
-use DI\Container;
+use DI\ContainerBuilder;
 use Slim\Factory\AppFactory;
 use Slim\Factory\ServerRequestCreatorFactory;
 use Slim\Middleware\ErrorMiddleware;
@@ -8,8 +8,13 @@ use Slim\ResponseEmitter;
 
 require __DIR__ . '/../vendor/autoload.php';
 
+// set environment variables
+require __DIR__ . '/../src/environment.php';
+
 // instantiate PHP-DI Container
-$container = new Container();
+$containerBuilder = new \DI\ContainerBuilder();
+// $containerBuilder->enableCompilation(__DIR__ . '/var/cache/');
+$container = $containerBuilder->build();
 
 // set the container we want to use and instantiate the app
 AppFactory::setContainer($container);

@@ -1,6 +1,5 @@
 <?php
 
-use Dotenv\Dotenv;
 use Monolog\Logger;
 use Slim\App;
 
@@ -9,21 +8,6 @@ return function (App $app) {
     $container = $app->getContainer();
 
     $today = (new \DateTime())->format('Y-m-d');
-
-    // load environment variables from .env file in api root directory
-    $dotenv = Dotenv::create(dirname(__DIR__));
-    $dotenv->load();
-
-    // these variables are required
-    $dotenv->required([
-        'DISPLAY_ERROR_DETAILS',
-        'DB_CONNECTION',
-        'DB_HOST',
-        'DB_PORT',
-        'DB_DATABASE',
-        'DB_USERNAME',
-        'DB_PASSWORD',
-    ]);
 
     // all custom settings the app uses should placed here
     $container->set('settings', [
