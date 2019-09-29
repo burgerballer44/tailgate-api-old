@@ -30,5 +30,6 @@ class UpdateGameScoreCommandValidator extends AbstractRespectValidator
         $this->rules['gameId'] = V::notEmpty()->GameExist($this->gameViewRepository)->setName('Game');
         $this->rules['homeTeamScore'] = V::notEmpty()->intVal()->min(0)->setName('Home Team Score');
         $this->rules['awayTeamScore'] = V::notEmpty()->intVal()->min(0)->setName('Away Team Score');
+        $this->rules['startDate'] = V::notEmpty()->date('Y-m-d H:i')->setName('Start Date');
     }
 }

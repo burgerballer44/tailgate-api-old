@@ -70,12 +70,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/burgerballer44/tailgate.git",
-                "reference": "8cec66a95c07e55a0e4fab0c7c746629521f3d3c"
+                "reference": "45a59e341b5643a6a186ca6e8ae6e0dd1f61a267"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/burgerballer44/tailgate/zipball/8cec66a95c07e55a0e4fab0c7c746629521f3d3c",
-                "reference": "8cec66a95c07e55a0e4fab0c7c746629521f3d3c",
+                "url": "https://api.github.com/repos/burgerballer44/tailgate/zipball/45a59e341b5643a6a186ca6e8ae6e0dd1f61a267",
+                "reference": "45a59e341b5643a6a186ca6e8ae6e0dd1f61a267",
                 "shasum": ""
             },
             "require": {
@@ -114,7 +114,7 @@
                 "source": "https://github.com/burgerballer44/tailgate/tree/dev",
                 "issues": "https://github.com/burgerballer44/tailgate/issues"
             },
-            "time": "2019-09-21T02:20:04+00:00"
+            "time": "2019-09-28T23:47:41+00:00"
         },
         {
             "name": "buttercup/protects",
@@ -149,9 +149,9 @@
             "authors": [
                 {
                     "name": "Mathias Verraes",
+                    "role": "Developer of wrapped Money library",
                     "email": "mathias@verraes.net",
-                    "homepage": "http://verraes.net",
-                    "role": "Developer of wrapped Money library"
+                    "homepage": "http://verraes.net"
                 }
             ],
             "description": "Buttercup.Protects is a PHP library for building Aggregates that protect business rules, and that announce Domain Events.",
@@ -1037,16 +1037,16 @@
         },
         {
             "name": "php-di/phpdoc-reader",
-            "version": "2.1.0",
+            "version": "2.1.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/PHP-DI/PhpDocReader.git",
-                "reference": "7d0de60b9341933c8afd172a6255cd7557601e0e"
+                "reference": "15678f7451c020226807f520efb867ad26fbbfcf"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/PHP-DI/PhpDocReader/zipball/7d0de60b9341933c8afd172a6255cd7557601e0e",
-                "reference": "7d0de60b9341933c8afd172a6255cd7557601e0e",
+                "url": "https://api.github.com/repos/PHP-DI/PhpDocReader/zipball/15678f7451c020226807f520efb867ad26fbbfcf",
+                "reference": "15678f7451c020226807f520efb867ad26fbbfcf",
                 "shasum": ""
             },
             "require": {
@@ -1070,7 +1070,7 @@
                 "phpdoc",
                 "reflection"
             ],
-            "time": "2018-02-18T17:39:01+00:00"
+            "time": "2019-09-26T11:24:58+00:00"
         },
         {
             "name": "phpoption/phpoption",
@@ -2582,7 +2582,7 @@
         },
         {
             "name": "tightenco/collect",
-            "version": "v6.0.3",
+            "version": "v6.0.4",
             "source": {
                 "type": "git",
                 "url": "https://github.com/tightenco/collect.git",

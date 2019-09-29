@@ -326,12 +326,6 @@ return function (App $app) {
     $container->set('transformer.follow', function ($container) {
         return $container->get('transformer.follow.array');
     });
-    $container->set('transformer.team.array', function ($container) {
-        return new TeamViewArrayDataTransformer($container->get('transformer.follow'));
-    });
-    $container->set('transformer.team', function ($container) {
-        return $container->get('transformer.team.array');
-    });
     $container->set('transformer.game.array', function ($container) {
         return new GameViewArrayDataTransformer();
     });
@@ -343,5 +337,14 @@ return function (App $app) {
     });
     $container->set('transformer.season', function ($container) {
         return $container->get('transformer.season.array');
+    });
+    $container->set('transformer.team.array', function ($container) {
+        return new TeamViewArrayDataTransformer(
+            $container->get('transformer.follow'),
+            $container->get('transformer.game')
+        );
+    });
+    $container->set('transformer.team', function ($container) {
+        return $container->get('transformer.team.array');
     });
 };
