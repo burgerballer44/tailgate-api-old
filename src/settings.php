@@ -47,7 +47,7 @@ return function (App $app) {
         // logger
         'logger' => [
             'name' => 'tailgate-api',
-            'path' => __DIR__ . "/../logs/app-{$today}.log",
+            'path' => __DIR__ . "/../var/logs/app-{$today}.log",
             'level' => Logger::DEBUG,
         ],
 
