@@ -32,7 +32,7 @@ return function (App $app) {
         'displayErrorDetails' => filter_var(getenv('DISPLAY_ERROR_DETAILS'), FILTER_VALIDATE_BOOLEAN),
 
         // how long should the token last for in seconds
-        'access_lifetime' => 10800, // 3 hours
+        'access_lifetime' => 28800, // 8 hours
 
         // pdo connection to database
         'pdo' => [
