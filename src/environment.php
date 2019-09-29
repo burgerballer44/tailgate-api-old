@@ -8,6 +8,7 @@ $dotenv->load();
 
 // these variables are required
 $dotenv->required([
+    'MODE',
     'DISPLAY_ERROR_DETAILS',
     'DB_CONNECTION',
     'DB_HOST',
@@ -16,3 +17,17 @@ $dotenv->required([
     'DB_USERNAME',
     'DB_PASSWORD',
 ]);
+
+// set constants based on the environemnt we want
+// should be 'dev' or 'prod'
+$mode = getenv('MODE');
+$devMode = true;
+$prodMode = false;
+if ('dev' != $mode) {
+    $mode = 'prod';
+    $devMode = false;
+    $prodMode = true;
+}
+define("MODE", $mode);
+define("DEV_MODE", $devMode);
+define("PROD_MODE", $prodMode);
