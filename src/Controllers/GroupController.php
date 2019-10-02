@@ -43,7 +43,7 @@ class GroupController extends ApiController
     // regular - can create a group that they have to be the owner of
     public function createPost(ServerRequestInterface $request, ResponseInterface $response, $args)
     {
-        $userId = $request->getAttribute('user_id');
+        $userId = $request->getAttribute('userId');
         $parsedBody = $request->getParsedBody();
 
         $command = new CreateGroupCommand(
@@ -180,7 +180,7 @@ class GroupController extends ApiController
     // 
     public function groupPatch(ServerRequestInterface $request, ResponseInterface $response, $args)
     {
-        $userId = $request->getAttribute('user_id');
+        $userId = $request->getAttribute('userId');
         $groupId = $args['groupId'];
         $parsedBody = $request->getParsedBody();
 

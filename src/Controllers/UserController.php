@@ -32,6 +32,13 @@ class UserController extends ApiController
         $user = $this->container->get('queryBus')->handle(new UserQuery($userId));
         return $this->respondWithData($response, $user);
     }
+
+    public function me(ServerRequestInterface $request, ResponseInterface $response, $args)
+    {
+        $userId = $request->getAttribute('userId');
+        $user = $this->container->get('queryBus')->handle(new UserQuery($userId));
+        return $this->respondWithData($response, $user);
+    }
     
     // anyone
     public function registerPost(ServerRequestInterface $request, ResponseInterface $response, $args)

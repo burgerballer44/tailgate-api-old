@@ -89,7 +89,7 @@ return function (App $app) {
         $container->get('viewRepository.group'), $container->get('viewRepository.score')
     );});
     $container->set('AddPlayerToGroupCommandValidator', function ($container) {return new AddPlayerToGroupCommandValidator(
-        $container->get('viewRepository.group'), $container->get('viewRepository.member')
+        $container->get('viewRepository.group'), $container->get('viewRepository.member'), $container->get('viewRepository.player')
     );});
     
 

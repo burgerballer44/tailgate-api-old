@@ -17,6 +17,8 @@ return function (App $app) {
     // API
     $app->group('/v1', function (Group $group) {
 
+        $group->get('/me', \TailgateApi\Controllers\UserController::class . ':me');
+
         // user
         $group->group('/users', function (Group $group) {
             $group->get('', \TailgateApi\Controllers\UserController::class . ':all');

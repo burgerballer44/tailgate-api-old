@@ -32,7 +32,7 @@ class GuardMiddleware implements MiddlewareInterface
 
         // store the user_id into the request's attributes
         $token = $server->getAccessTokenData($req);
-        $request = $request->withAttribute('user_id', $token['user_id']);
+        $request = $request->withAttribute('userId', $token['user_id']);
         
         return $handler->handle($request);
     }
