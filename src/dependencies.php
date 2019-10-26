@@ -124,11 +124,6 @@ return function (App $app) {
         return $server;
     });
 
-    // group middleware
-    $container->set(GuardMiddleware::class, function ($container) {
-        return new GuardMiddleware($container->get('oauthServer'));
-    });
-
     // logger
     $container->set('logger', function ($container) {
         $settings = $container->get('settings');
@@ -346,5 +341,14 @@ return function (App $app) {
     });
     $container->set('transformer.team', function ($container) {
         return $container->get('transformer.team.array');
+    });
+
+
+    // middleware
+    $container->set(GuardMiddleware::class, function ($container) {
+        return new GuardMiddleware(
+            $container->get('oauthServer'),
+            $container
+        );
     });
 };

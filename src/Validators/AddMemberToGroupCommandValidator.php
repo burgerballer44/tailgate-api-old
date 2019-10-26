@@ -11,13 +11,16 @@ use TailgateApi\Validators\User\UserExist;
 class AddMemberToGroupCommandValidator extends AbstractRespectValidator
 {
     private $userViewRepository;
+    private $memberViewRepository;
     private $groupViewRepository;
 
     public function __construct(
         GroupViewRepositoryInterface $groupViewRepository,
+        MemberViewRepositoryInterface $memberViewRepository,
         UserViewRepositoryInterface $userViewRepository
     ) {
         $this->groupViewRepository = $groupViewRepository;
+        $this->memberViewRepository = $memberViewRepository;
         $this->userViewRepository = $userViewRepository;
     }
 
@@ -27,6 +30,6 @@ class AddMemberToGroupCommandValidator extends AbstractRespectValidator
         V::with("TailgateApi\Validators\Group\\");
 
         $this->rules['groupId'] = V::notEmpty()->stringType()->GroupExist($this->groupViewRepository)->setName('Group');
-        $this->rules['userId'] = V::notEmpty()->stringType()->UserExist($this->userViewRepository)->setName('Owner');
+        $this->rules['userId'] = V::notEmpty()->stringType()->UserExist($this->userViewRepository)->GroupLimit($this->memberViewRepository)->setName('Owner');
     }
 }

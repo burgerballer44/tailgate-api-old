@@ -3,7 +3,7 @@
 namespace TailgateApi\Validators;
 
 use Respect\Validation\Validator as V;
-use TailgateApi\Validators\User\UserExist;
+use TailgateApi\Validators\User\PendingUserExist;
 use Tailgate\Domain\Model\User\UserViewRepositoryInterface;
 
 class ActivateUserCommandValidator extends AbstractRespectValidator
@@ -19,6 +19,6 @@ class ActivateUserCommandValidator extends AbstractRespectValidator
     {
         V::with("TailgateApi\Validators\User\\");
 
-        $this->rules['userId'] = V::notEmpty()->stringType()->UserExist($this->userViewRepository)->setName('User');
+        $this->rules['userId'] = V::notEmpty()->stringType()->PendingUserExist($this->userViewRepository)->setName('User');
     }
 }

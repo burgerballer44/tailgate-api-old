@@ -71,13 +71,13 @@ return function (App $app) {
 
 
     $container->set('CreateGroupCommandValidator', function ($container) {return new CreateGroupCommandValidator(
-        $container->get('viewRepository.user')
+        $container->get('viewRepository.user'), $container->get('viewRepository.member')
     );});
     $container->set('UpdateGroupCommandValidator', function ($container) {return new UpdateGroupCommandValidator(
         $container->get('viewRepository.group'), $container->get('viewRepository.user')
     );});
     $container->set('AddMemberToGroupCommandValidator', function ($container) {return new AddMemberToGroupCommandValidator(
-        $container->get('viewRepository.group'), $container->get('viewRepository.user')
+        $container->get('viewRepository.group'), $container->get('viewRepository.member'), $container->get('viewRepository.user')
     );});
     $container->set('UpdateMemberCommandValidator', function ($container) {return new UpdateMemberCommandValidator(
         $container->get('viewRepository.group'), $container->get('viewRepository.member')
@@ -98,7 +98,7 @@ return function (App $app) {
         $container->get('viewRepository.team')
     );});
     $container->set('FollowTeamCommandValidator', function ($container) {return new FollowTeamCommandValidator(
-        $container->get('viewRepository.team'), $container->get('viewRepository.group')
+        $container->get('viewRepository.team'), $container->get('viewRepository.group'), $container->get('viewRepository.follow')
     );});
     
 

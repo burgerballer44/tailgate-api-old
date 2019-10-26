@@ -10,6 +10,8 @@ use Tailgate\Application\Query\User\AllUsersQueryHandler;
 
 use Tailgate\Application\Query\Group\GroupQuery;
 use Tailgate\Application\Query\Group\GroupQueryHandler;
+use Tailgate\Application\Query\Group\QueryGroupsQuery;
+use Tailgate\Application\Query\Group\QueryGroupsQueryHandler;
 use Tailgate\Application\Query\Group\AllGroupsQuery;
 use Tailgate\Application\Query\Group\AllGroupsQueryHandler;
 
@@ -37,6 +39,10 @@ return function (App $app) {
                 $container->get('viewRepository.member'),
                 $container->get('viewRepository.player'),
                 $container->get('viewRepository.score'),
+                $container->get('transformer.group')
+            ),
+            QueryGroupsQuery::class => new QueryGroupsQueryHandler(
+                $container->get('viewRepository.group'),
                 $container->get('transformer.group')
             ),
             AllGroupsQuery::class => new AllGroupsQueryHandler($container->get('viewRepository.group'), $container->get('transformer.group')),

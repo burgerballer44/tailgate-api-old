@@ -6,6 +6,7 @@ use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
 use Tailgate\Application\Query\Group\GroupQuery;
+use Tailgate\Application\Query\Group\QueryGroupsQuery;
 use Tailgate\Application\Query\Group\AllGroupsQuery;
 use Tailgate\Application\Command\Group\AddMemberToGroupCommand;
 use Tailgate\Application\Command\Group\AddPlayerToGroupCommand;
@@ -21,26 +22,27 @@ use Tailgate\Application\Command\Group\UpdateScoreForGroupCommand;
 
 class GroupController extends ApiController
 {
-    // admin - gets all groups
-    // regular - get all groups they belong to
+    /**
+     * get all group that authenticated user belong to
+     * @param  ServerRequestInterface $request  [description]
+     * @param  ResponseInterface      $response [description]
+     * @param  [type]                 $args     [description]
+     * @return [type]                           [description]
+     */
     public function all(ServerRequestInterface $request, ResponseInterface $response, $args)
     {
-        $groups = $this->container->get('queryBus')->handle(new AllGroupsQuery());
+        $userId = $request->getAttribute('userId');
+        $groups = $this->container->get('queryBus')->handle(new AllGroupsQuery($userId));
         return $this->respondWithData($response, $groups);
     }
 
-    // admin - view any group
-    // regular - view group they belong to
-    public function view(ServerRequestInterface $request, ResponseInterface $response, $args)
-    {
-        $groupId = $args['groupId'];
-        $group = $this->container->get('queryBus')->handle(new GroupQuery($groupId));
-       
-        return $this->respondWithData($response, $group);
-    }
-
-    // admin - can create any number of groups and assign the owner
-    // regular - can create a group that they have to be the owner of
+    /**
+     * create a group, assign authenticed user as owner, and member
+     * @param  ServerRequestInterface $request  [description]
+     * @param  ResponseInterface      $response [description]
+     * @param  [type]                 $args     [description]
+     * @return [type]                           [description]
+     */
     public function createPost(ServerRequestInterface $request, ResponseInterface $response, $args)
     {
         $userId = $request->getAttribute('userId');
@@ -60,6 +62,40 @@ class GroupController extends ApiController
 
         return $this->respondWithValidationError($response, $validator->errors());
     }
+
+    /**
+     * [view description]
+     * @param  ServerRequestInterface $request  [description]
+     * @param  ResponseInterface      $response [description]
+     * @param  [type]                 $args     [description]
+     * @return [type]                           [description]
+     */
+    public function view(ServerRequestInterface $request, ResponseInterface $response, $args)
+    {
+        $userId = $request->getAttribute('userId');
+        extract($args);
+        $group = $this->container->get('queryBus')->handle(new GroupQuery($userId, $groupId));
+        return $this->respondWithData($response, $group);
+    }
+
+    /**
+     * delete a group
+     * @param  ServerRequestInterface $request  [description]
+     * @param  ResponseInterface      $response [description]
+     * @param  [type]                 $args     [description]
+     * @return [type]                           [description]
+     */
+    public function groupDelete(ServerRequestInterface $request, ResponseInterface $response, $args)
+    {
+        extract($args);
+        $command = new DeleteGroupCommand($groupId);
+        $this->container->get('commandBus')->handle($command);
+        return $response;
+    }
+
+
+
+
 
     // admin - can add any user to any group
     // regular - can join a group by invitation code
@@ -131,17 +167,6 @@ class GroupController extends ApiController
         }
 
         return $this->respondWithValidationError($response, $validator->errors());
-    }
-
-    // 
-    public function groupDelete(ServerRequestInterface $request, ResponseInterface $response, $args)
-    {
-        $groupId = $args['groupId'];
-
-        $command = new DeleteGroupCommand($groupId);
-        $this->container->get('commandBus')->handle($command);
-        return $response;
-
     }
 
     // 
@@ -247,4 +272,18 @@ class GroupController extends ApiController
 
         return $this->respondWithValidationError($response, $validator->errors());
     }
+
+
+
+
+
+    // public function query(ServerRequestInterface $request, ResponseInterface $response, $args)
+    // {
+    //     $params = $request->getQueryParams();
+    //     $userId = $params['userId'] ?? '';
+    //     $name = $params['name'] ?? '';
+
+    //     $groups = $this->container->get('queryBus')->handle(new QueryGroupsQuery($userId, $name));
+    //     return $this->respondWithData($response, $groups);
+    // }
 }

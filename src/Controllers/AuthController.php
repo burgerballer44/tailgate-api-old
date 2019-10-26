@@ -8,7 +8,7 @@ use Psr\Http\Message\ServerRequestInterface;
 class AuthController extends ApiController
 {
     /**
-     * [token description]
+     * grants a user token to use the api
      * @param  ServerRequestInterface $request  [description]
      * @param  ResponseInterface      $response [description]
      * @param  [type]                 $args     [description]
