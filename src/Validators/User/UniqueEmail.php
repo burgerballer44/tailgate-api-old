@@ -25,7 +25,11 @@ class UniqueEmail extends AbstractRule
      */
     public function validate($input)
     {
-        $userView = $this->userViewRepository->byEmail($input);
+        try {
+            $userView = $this->userViewRepository->byEmail($input);
+        } catch (\Throwable $e) {
+            $userView = false;
+        }
 
         // return true if we want to allow the userId to bypass check if it is their own email
         if ($this->userId && $userView) {

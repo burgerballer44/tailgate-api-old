@@ -8,11 +8,14 @@ use Psr\Container\ContainerInterface;
 
 use Tailgate\Application\Query\User\UserQuery;
 use Tailgate\Application\Query\User\AllUsersQuery;
+use Tailgate\Application\Query\User\UserEmailQuery;
+use Tailgate\Application\Query\User\UserResetPasswordTokenQuery;
 use Tailgate\Application\Command\User\ActivateUserCommand;
 use Tailgate\Application\Command\User\DeleteUserCommand;
 use Tailgate\Application\Command\User\RegisterUserCommand;
 use Tailgate\Application\Command\User\UpdateEmailCommand;
-use Tailgate\Application\Command\User\UpdatePasswordCommand;
+use Tailgate\Application\Command\User\RequestPasswordResetCommand;
+use Tailgate\Application\Command\User\ResetPasswordCommand;
 use Tailgate\Application\Command\User\UpdateUserCommand;
 
 class UserController extends ApiController
@@ -68,6 +71,65 @@ class UserController extends ApiController
             return $response;
         }
         
+        return $this->respondWithValidationError($response, $validator->errors());
+    }
+
+    /**
+     * provides a password reset request key
+     * @param  ServerRequestInterface $request  [description]
+     * @param  ResponseInterface      $response [description]
+     * @param  [type]                 $args     [description]
+     * @return [type]                           [description]
+     */
+    public function requestReset(ServerRequestInterface $request, ResponseInterface $response, $args)
+    {
+        $parsedBody = $request->getParsedBody();
+        $email = $parsedBody['email'];
+
+        $command = new RequestPasswordResetCommand($email);
+
+        $validator = $this->container->get('validationInflector')->getValidatorClass($command);
+        
+        if ($validator->assert($command)) {
+            $user = $this->container->get('queryBus')->handle(new UserEmailQuery($email));
+            $userId = $user['userId'];
+            $command = new RequestPasswordResetCommand($userId);
+            $user = $this->container->get('commandBus')->handle($command);
+            return $this->respondWithData($response, $user);
+        }
+        
+        return $this->respondWithValidationError($response, $validator->errors());
+    }
+
+    /**
+     * passwords can be updated with a token
+     * @param  ServerRequestInterface $request  [description]
+     * @param  ResponseInterface      $response [description]
+     * @param  [type]                 $args     [description]
+     * @return [type]                           [description]
+     */
+    public function passwordPatch(ServerRequestInterface $request, ResponseInterface $response, $args)
+    {
+        $parsedBody = $request->getParsedBody();
+        $passwordResetToken = $parsedBody['passwordResetToken'];
+
+        // get userId by token
+        $user = $this->container->get('queryBus')->handle(new UserResetPasswordTokenQuery($passwordResetToken));
+        $userId = $user['userId'];
+
+        $command = new ResetPasswordCommand(
+            $userId,
+            $parsedBody['password'] ?? '',
+            $parsedBody['confirmPassword'] ?? ''
+        );
+        
+        $validator = $this->container->get('validationInflector')->getValidatorClass($command);
+        
+        if ($validator->assert($command)) {
+            $this->container->get('commandBus')->handle($command);
+            return $response;
+        }
+
         return $this->respondWithValidationError($response, $validator->errors());
     }
 
@@ -144,34 +206,6 @@ class UserController extends ApiController
     }
 
     /**
-     * anyone can update their own password
-     * @param  ServerRequestInterface $request  [description]
-     * @param  ResponseInterface      $response [description]
-     * @param  [type]                 $args     [description]
-     * @return [type]                           [description]
-     */
-    public function passwordPatch(ServerRequestInterface $request, ResponseInterface $response, $args)
-    {
-        $userId = $request->getAttribute('userId');
-        $parsedBody = $request->getParsedBody();
-
-        $command = new UpdatePasswordCommand(
-            $userId,
-            $parsedBody['password'] ?? '',
-            $parsedBody['confirmPassword'] ?? ''
-        );
-        
-        $validator = $this->container->get('validationInflector')->getValidatorClass($command);
-        
-        if ($validator->assert($command)) {
-            $this->container->get('commandBus')->handle($command);
-            return $response;
-        }
-
-        return $this->respondWithValidationError($response, $validator->errors());
-    }
-
-    /**
      * get all users
      * @param  ServerRequestInterface $request  [description]
      * @param  ResponseInterface      $response [description]
@@ -194,7 +228,6 @@ class UserController extends ApiController
     public function view(ServerRequestInterface $request, ResponseInterface $response, $args)
     {
         extract($args);
-
         $user = $this->container->get('queryBus')->handle(new UserQuery($userId));
         return $this->respondWithData($response, $user);
     }

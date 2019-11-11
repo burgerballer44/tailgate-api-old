@@ -7,9 +7,10 @@ return function (App $app) {
 
     $container = $app->getContainer();
 
-    // this was normally part of the user group but we need it public so users can register
     $app->post('/register', \TailgateApi\Controllers\UserController::class . ':registerPost');
     $app->patch('/activate/{userId}', \TailgateApi\Controllers\UserController::class . ':activate');
+    $app->post('/request-reset', \TailgateApi\Controllers\UserController::class . ':requestReset');
+    $app->patch('/reset-password', \TailgateApi\Controllers\UserController::class . ':passwordPatch');
 
     // grant a token for a user trying to access the API
     $app->post('/token', \TailgateApi\Controllers\AuthController::class . ':token');
@@ -21,20 +22,20 @@ return function (App $app) {
             $group->get('/me', \TailgateApi\Controllers\UserController::class . ':me');
             $group->patch('/me', \TailgateApi\Controllers\UserController::class . ':mePatch');
             $group->patch('/me/email', \TailgateApi\Controllers\UserController::class . ':emailPatch');
-            $group->patch('/me/password', \TailgateApi\Controllers\UserController::class . ':passwordPatch');
         });
 
         $group->group('/groups', function (Group $group) {
+            $group->post('/invite-code', \TailgateApi\Controllers\GroupController::class . ':inviteCodePost');
             $group->get('', \TailgateApi\Controllers\GroupController::class . ':all');
             $group->post('', \TailgateApi\Controllers\GroupController::class . ':createPost');
             $group->get('/{groupId}', \TailgateApi\Controllers\GroupController::class . ':view');
             $group->delete('/{groupId}', \TailgateApi\Controllers\GroupController::class . ':groupDelete');
+            $group->post('/{groupId}/member/{memberId}/player', \TailgateApi\Controllers\GroupController::class . ':playerPost');
+            $group->delete('/{groupId}/player/{playerId}', \TailgateApi\Controllers\GroupController::class . ':playerDelete');
             
             $group->post('/{groupId}/member', \TailgateApi\Controllers\GroupController::class . ':memberPost');
             $group->patch('/{groupId}/member/{memberId}', \TailgateApi\Controllers\GroupController::class . ':memberPatch');
             $group->delete('/{groupId}/member/{memberId}', \TailgateApi\Controllers\GroupController::class . ':memberDelete');
-            $group->post('/{groupId}/member/{memberId}/player', \TailgateApi\Controllers\GroupController::class . ':playerPost');
-            $group->delete('/{groupId}/player/{playerId}', \TailgateApi\Controllers\GroupController::class . ':playerDelete');
             $group->post('/{groupId}/player/{playerId}/score', \TailgateApi\Controllers\GroupController::class . ':scorePost');
             $group->delete('/{groupId}/score/{scoreId}', \TailgateApi\Controllers\GroupController::class . ':scoreDelete');
             $group->patch('/{groupId}/score/{scoreId}', \TailgateApi\Controllers\GroupController::class . ':scorePatch');

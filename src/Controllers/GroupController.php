@@ -7,6 +7,7 @@ use Psr\Http\Message\ServerRequestInterface;
 
 use Tailgate\Application\Query\Group\GroupQuery;
 use Tailgate\Application\Query\Group\QueryGroupsQuery;
+use Tailgate\Application\Query\Group\GroupInviteCodeQuery;
 use Tailgate\Application\Query\Group\AllGroupsQuery;
 use Tailgate\Application\Command\Group\AddMemberToGroupCommand;
 use Tailgate\Application\Command\Group\AddPlayerToGroupCommand;
@@ -22,6 +23,35 @@ use Tailgate\Application\Command\Group\UpdateScoreForGroupCommand;
 
 class GroupController extends ApiController
 {
+    /**
+     * join a group by invite code
+     * @param  ServerRequestInterface $request  [description]
+     * @param  ResponseInterface      $response [description]
+     * @param  [type]                 $args     [description]
+     * @return [type]                           [description]
+     */
+    public function inviteCodePost(ServerRequestInterface $request, ResponseInterface $response, $args)
+    {
+        $userId = $request->getAttribute('userId');
+        $parsedBody = $request->getParsedBody();
+        $inviteCode = $parsedBody['inviteCode'];
+
+        // get groupId by invite code
+        $group = $this->container->get('queryBus')->handle(new GroupInviteCodeQuery($inviteCode));
+        $groupId = $group['groupId'];
+
+        $command = new AddMemberToGroupCommand($groupId, $userId);
+        
+        $validator = $this->container->get('validationInflector')->getValidatorClass($command);
+        
+        if ($validator->assert($command)) {
+            $this->container->get('commandBus')->handle($command);
+            return $response;
+        }
+
+        return $this->respondWithValidationError($response, $validator->errors());
+    }
+
     /**
      * get all group that authenticated user belong to
      * @param  ServerRequestInterface $request  [description]
@@ -48,10 +78,7 @@ class GroupController extends ApiController
         $userId = $request->getAttribute('userId');
         $parsedBody = $request->getParsedBody();
 
-        $command = new CreateGroupCommand(
-            $parsedBody['name'],
-            $userId
-        );
+        $command = new CreateGroupCommand($parsedBody['name'], $userId);
 
         $validator = $this->container->get('validationInflector')->getValidatorClass($command);
         
@@ -64,7 +91,7 @@ class GroupController extends ApiController
     }
 
     /**
-     * [view description]
+     * view a group the user belongs to
      * @param  ServerRequestInterface $request  [description]
      * @param  ResponseInterface      $response [description]
      * @param  [type]                 $args     [description]
@@ -79,7 +106,7 @@ class GroupController extends ApiController
     }
 
     /**
-     * delete a group
+     * delete a group the user owns
      * @param  ServerRequestInterface $request  [description]
      * @param  ResponseInterface      $response [description]
      * @param  [type]                 $args     [description]
@@ -87,11 +114,81 @@ class GroupController extends ApiController
      */
     public function groupDelete(ServerRequestInterface $request, ResponseInterface $response, $args)
     {
+        $userId = $request->getAttribute('userId');
         extract($args);
+        $group = $this->container->get('queryBus')->handle(new GroupQuery($userId, $groupId));
+
+        if ($userId != $group['ownerId']) {
+            throw new \Exception("Hey! Invalid permissions!");
+        }
+
         $command = new DeleteGroupCommand($groupId);
         $this->container->get('commandBus')->handle($command);
         return $response;
     }
+
+    /**
+     * add a player to group
+     * @param  ServerRequestInterface $request  [description]
+     * @param  ResponseInterface      $response [description]
+     * @param  [type]                 $args     [description]
+     * @return [type]                           [description]
+     */
+    public function playerPost(ServerRequestInterface $request, ResponseInterface $response, $args)
+    {
+        $userId = $request->getAttribute('userId');
+        extract($args);
+        $group = $this->container->get('queryBus')->handle(new GroupQuery($userId, $groupId));
+        $member = collect($group['members'])->firstWhere('userId', $userId);
+
+        // if the user is not an admin or the user changing themself
+        if ('Group-Admin' != $member['role'] && $member['memberId'] != $memberId) {
+            throw new \Exception("Hey! Invalid permissions!");
+        }
+
+        $parsedBody = $request->getParsedBody();
+
+        $command = new AddPlayerToGroupCommand(
+            $groupId,
+            $memberId,
+            $parsedBody['username'] ?? ''
+        );
+
+        $validator = $this->container->get('validationInflector')->getValidatorClass($command);
+        
+        if ($validator->assert($command)) {
+            $this->container->get('commandBus')->handle($command);
+            return $response;
+        }
+
+        return $this->respondWithValidationError($response, $validator->errors());
+    }
+
+    /**
+     * delete a player from a group
+     * @param  ServerRequestInterface $request  [description]
+     * @param  ResponseInterface      $response [description]
+     * @param  [type]                 $args     [description]
+     * @return [type]                           [description]
+     */
+    public function playerDelete(ServerRequestInterface $request, ResponseInterface $response, $args)
+    {
+        $userId = $request->getAttribute('userId');
+        extract($args);
+        $group = $this->container->get('queryBus')->handle(new GroupQuery($userId, $groupId));
+        $member = collect($group['members'])->firstWhere('userId', $userId);
+        $playerIds = collect($group['players'])->where('memberId', $member['memberId'])->pluck('playerId')->toArray();
+
+        // if the user is not an admin or the user changing themself
+        if ('Group-Admin' != $member['role'] && !in_array($playerId, $playerIds)) {
+            throw new \Exception("Hey! Invalid permissions!");
+        }
+        
+        $command = new DeletePlayerCommand($groupId, $playerId);
+        $this->container->get('commandBus')->handle($command);
+        return $response;
+    }
+
 
 
 
@@ -108,28 +205,6 @@ class GroupController extends ApiController
         $command = new AddMemberToGroupCommand(
             $groupId,
             $parsedBody['userId'] ?? ''
-        );
-
-        $validator = $this->container->get('validationInflector')->getValidatorClass($command);
-        
-        if ($validator->assert($command)) {
-            $this->container->get('commandBus')->handle($command);
-            return $response;
-        }
-
-        return $this->respondWithValidationError($response, $validator->errors());
-    }
-
-    public function playerPost(ServerRequestInterface $request, ResponseInterface $response, $args)
-    {
-        $groupId = $args['groupId'];
-        $memberId = $args['memberId'];
-        $parsedBody = $request->getParsedBody();
-
-        $command = new AddPlayerToGroupCommand(
-            $groupId,
-            $memberId,
-            $parsedBody['username'] ?? ''
         );
 
         $validator = $this->container->get('validationInflector')->getValidatorClass($command);
@@ -176,17 +251,6 @@ class GroupController extends ApiController
         $memberId = $args['memberId'];
 
         $command = new DeleteMemberCommand($groupId, $memberId);
-        $this->container->get('commandBus')->handle($command);
-        return $response;
-    }
-
-    // 
-    public function playerDelete(ServerRequestInterface $request, ResponseInterface $response, $args)
-    {
-        $groupId = $args['groupId'];
-        $playerId = $args['playerId'];
-
-        $command = new DeletePlayerCommand($groupId, $playerId);
         $this->container->get('commandBus')->handle($command);
         return $response;
     }

@@ -7,7 +7,8 @@ use TailgateApi\Validators\RegisterUserCommandValidator;
 use TailgateApi\Validators\ActivateUserCommandValidator;
 use TailgateApi\Validators\UpdateUserCommandValidator;
 use TailgateApi\Validators\UpdateEmailCommandValidator;
-use TailgateApi\Validators\UpdatePasswordCommandValidator;
+use TailgateApi\Validators\ResetPasswordCommandValidator;
+use TailgateApi\Validators\RequestPasswordResetCommandValidator;
 
 use TailgateApi\Validators\AddMemberToGroupCommandValidator;
 use TailgateApi\Validators\UpdateMemberCommandValidator;
@@ -56,7 +57,10 @@ return function (App $app) {
     $container->set('RegisterUserCommandValidator', function ($container) {return new RegisterUserCommandValidator(
         $container->get('viewRepository.user')
     );});
-    $container->set('UpdatePasswordCommandValidator', function ($container) {return new UpdatePasswordCommandValidator(
+    $container->set('RequestPasswordResetCommandValidator', function ($container) {return new RequestPasswordResetCommandValidator(
+        $container->get('viewRepository.user')
+    );});
+    $container->set('ResetPasswordCommandValidator', function ($container) {return new ResetPasswordCommandValidator(
         $container->get('viewRepository.user')
     );});
     $container->set('ActivateUserCommandValidator', function ($container) {return new ActivateUserCommandValidator(

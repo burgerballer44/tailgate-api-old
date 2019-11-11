@@ -7,7 +7,7 @@ use TailgateApi\Validators\User\UserExist;
 use TailgateApi\Validators\User\PasswordMatches;
 use Tailgate\Domain\Model\User\UserViewRepositoryInterface;
 
-class UpdatePasswordCommandValidator extends AbstractRespectValidator
+class ResetPasswordCommandValidator extends AbstractRespectValidator
 {
     private $userViewRepository;
 

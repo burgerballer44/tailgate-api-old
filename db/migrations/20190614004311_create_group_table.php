@@ -15,6 +15,7 @@ class CreateGroupTable extends AbstractMigration
         $group->addColumn('group_id', 'string', ['limit' => 36])
             ->addColumn('name', 'string', ['limit' => 30])
             ->addColumn('owner_id', 'string', ['limit' => 36])
+            ->addColumn('invite_code', 'string', ['limit' => 100])
             ->addColumn('created_at', 'datetime')
             ->addIndex(['owner_id'])
             ->save();

@@ -56,10 +56,12 @@ use Tailgate\Application\Command\User\DeleteUserCommand;
 use Tailgate\Application\Command\User\DeleteUserHandler;
 use Tailgate\Application\Command\User\RegisterUserCommand;
 use Tailgate\Application\Command\User\RegisterUserHandler;
+use Tailgate\Application\Command\User\RequestPasswordResetCommand;
+use Tailgate\Application\Command\User\RequestPasswordResetHandler;
 use Tailgate\Application\Command\User\UpdateEmailCommand;
 use Tailgate\Application\Command\User\UpdateEmailHandler;
-use Tailgate\Application\Command\User\UpdatePasswordCommand;
-use Tailgate\Application\Command\User\UpdatePasswordHandler;
+use Tailgate\Application\Command\User\ResetPasswordCommand;
+use Tailgate\Application\Command\User\ResetPasswordHandler;
 use Tailgate\Application\Command\User\UpdateUserCommand;
 use Tailgate\Application\Command\User\UpdateUserHandler;
 
@@ -72,7 +74,9 @@ return function (App $app) {
 
             AddMemberToGroupCommand::class => new AddMemberToGroupHandler( $container->get('repository.group')),
             AddPlayerToGroupCommand::class => new AddPlayerToGroupHandler( $container->get('repository.group')),
-            CreateGroupCommand::class => new CreateGroupHandler($container->get('repository.group')),
+            CreateGroupCommand::class => new CreateGroupHandler(
+                $container->get('repository.group'), $container->get('stringShuffler')
+            ),
             DeleteGroupCommand::class => new DeleteGroupHandler($container->get('repository.group')),
             DeleteMemberCommand::class => new DeleteMemberHandler($container->get('repository.group')),
             DeletePlayerCommand::class => new DeletePlayerHandler($container->get('repository.group')),
@@ -102,10 +106,13 @@ return function (App $app) {
             DeleteUserCommand::class => new DeleteUserHandler($container->get('repository.user')),
             RegisterUserCommand::class => new RegisterUserHandler(
                 $container->get('repository.user'),
-                $container->get('passwordHashing'),
+                $container->get('passwordHashing')
+            ),
+            RequestPasswordResetCommand::class => new RequestPasswordResetHandler(
+                $container->get('repository.user'),
                 $container->get('stringShuffler')
             ),
-            UpdatePasswordCommand::class => new UpdatePasswordHandler(
+            ResetPasswordCommand::class => new ResetPasswordHandler(
                 $container->get('repository.user'),
                 $container->get('passwordHashing')
             ),
