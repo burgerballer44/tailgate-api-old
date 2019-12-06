@@ -102,7 +102,10 @@ return function (App $app) {
         $container->get('viewRepository.team')
     );});
     $container->set('FollowTeamCommandValidator', function ($container) {return new FollowTeamCommandValidator(
-        $container->get('viewRepository.team'), $container->get('viewRepository.group'), $container->get('viewRepository.follow')
+        $container->get('viewRepository.team'),
+        $container->get('viewRepository.group'),
+        $container->get('viewRepository.follow'),
+        $container->get('viewRepository.season')
     );});
     
 

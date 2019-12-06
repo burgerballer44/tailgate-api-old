@@ -14,8 +14,10 @@ use Tailgate\Application\Command\Group\AddPlayerToGroupCommand;
 use Tailgate\Application\Command\Group\CreateGroupCommand;
 use Tailgate\Application\Command\Group\DeleteGroupCommand;
 use Tailgate\Application\Command\Group\DeleteMemberCommand;
+use Tailgate\Application\Command\Group\DeleteFollowCommand;
 use Tailgate\Application\Command\Group\DeletePlayerCommand;
 use Tailgate\Application\Command\Group\DeleteScoreCommand;
+use Tailgate\Application\Command\Group\FollowTeamCommand;
 use Tailgate\Application\Command\Group\SubmitScoreForGroupCommand;
 use Tailgate\Application\Command\Group\UpdateGroupCommand;
 use Tailgate\Application\Command\Group\UpdateMemberCommand;
@@ -188,6 +190,74 @@ class GroupController extends ApiController
         $this->container->get('commandBus')->handle($command);
         return $response;
     }
+
+    /**
+     * group follows a team
+     * @param  ServerRequestInterface $request  [description]
+     * @param  ResponseInterface      $response [description]
+     * @param  [type]                 $args     [description]
+     * @return [type]                           [description]
+     */
+    public function followPost(ServerRequestInterface $request, ResponseInterface $response, $args)
+    {   
+        $userId = $request->getAttribute('userId');
+        $user = $request->getAttribute('user');
+
+        extract($args);
+        $parsedBody = $request->getParsedBody();
+        $group = $this->container->get('queryBus')->handle(new GroupQuery($userId, $groupId));
+        $member = collect($group['members'])->firstWhere('userId', $userId);
+
+        // if the user is not an admin
+        if ('Group-Admin' != $member['role'] && 'Admin' != $user['role']) {
+            throw new \Exception("Hey! Invalid permissions!");
+        }
+
+        $command = new FollowTeamCommand(
+            $groupId,
+            $parsedBody['teamId'] ?? '',
+            $parsedBody['seasonId'] ?? ''
+        );
+
+        $validator = $this->container->get('validationInflector')->getValidatorClass($command);
+        
+        if ($validator->assert($command)) {
+            $this->container->get('commandBus')->handle($command);
+            return $response;
+        }
+
+        return $this->respondWithValidationError($response, $validator->errors());
+    }
+
+    /**
+     * delete a follow
+     * @param  ServerRequestInterface $request  [description]
+     * @param  ResponseInterface      $response [description]
+     * @param  [type]                 $args     [description]
+     * @return [type]                           [description]
+     */
+    public function followDelete(ServerRequestInterface $request, ResponseInterface $response, $args)
+    {
+        $userId = $request->getAttribute('userId');
+        $user = $request->getAttribute('user');
+        extract($args);
+        $parsedBody = $request->getParsedBody();
+        $group = $this->container->get('queryBus')->handle(new GroupQuery($userId, $groupId));
+        $member = collect($group['members'])->firstWhere('userId', $userId);
+
+        // if the user is not an admin
+        if ('Group-Admin' != $member['role'] && 'Admin' != $user['role']) {
+            throw new \Exception("Hey! Invalid permissions!");
+        }
+        
+        $command = new DeleteFollowCommand($groupId, $followId);
+        $this->container->get('commandBus')->handle($command);
+        return $response;
+    }
+
+
+
+
 
 
 

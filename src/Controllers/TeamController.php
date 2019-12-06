@@ -8,32 +8,44 @@ use Psr\Http\Message\ServerRequestInterface;
 use Tailgate\Application\Query\Team\TeamQuery;
 use Tailgate\Application\Query\Team\AllTeamsQuery;
 use Tailgate\Application\Command\Team\AddTeamCommand;
-use Tailgate\Application\Command\Team\DeleteFollowCommand;
 use Tailgate\Application\Command\Team\DeleteTeamCommand;
-use Tailgate\Application\Command\Team\FollowTeamCommand;
 use Tailgate\Application\Command\Team\UpdateTeamCommand;
 
 class TeamController extends ApiController
 {
-    // admin - can view all teams
-    // regular - can view all teams
+    /**
+     * view all teams
+     * @param  ServerRequestInterface $request  [description]
+     * @param  ResponseInterface      $response [description]
+     * @param  [type]                 $args     [description]
+     * @return [type]                           [description]
+     */
     public function all(ServerRequestInterface $request, ResponseInterface $response, $args)
     {
         $teams = $this->container->get('queryBus')->handle(new AllTeamsQuery());
         return $this->respondWithData($response, $teams);
     }
 
-    // admin - can view details of a team
-    // regular - can view details of a team
+    /**
+     * view details of a team
+     * @param  ServerRequestInterface $request  [description]
+     * @param  ResponseInterface      $response [description]
+     * @param  [type]                 $args     [description]
+     * @return [type]                           [description]
+     */
     public function view(ServerRequestInterface $request, ResponseInterface $response, $args)
     {
-        $teamId = $args['teamId'];
+        extract($args);
         $team = $this->container->get('queryBus')->handle(new TeamQuery($teamId));
-        
         return $this->respondWithData($response, $team);
     }
 
-    // admin - can add a team
+    /**
+     * add a team
+     * @param ServerRequestInterface $request  [description]
+     * @param ResponseInterface      $response [description]
+     * @param [type]                 $args     [description]
+     */
     public function addPost(ServerRequestInterface $request, ResponseInterface $response, $args)
     {
         $parsedBody = $request->getParsedBody();
@@ -53,32 +65,16 @@ class TeamController extends ApiController
         return $this->respondWithValidationError($response, $validator->errors());
     }
 
-    // admin - can have group follow any team
-    // regular Group Admin - can have their own group follow any team
-    public function followPost(ServerRequestInterface $request, ResponseInterface $response, $args)
-    {   
-        $teamId = $args['teamId'];
-        $parsedBody = $request->getParsedBody();
-
-        $command = new FollowTeamCommand(
-            $parsedBody['groupId'] ?? '',
-            $teamId
-        );
-
-        $validator = $this->container->get('validationInflector')->getValidatorClass($command);
-        
-        if ($validator->assert($command)) {
-            $this->container->get('commandBus')->handle($command);
-            return $response;
-        }
-
-        return $this->respondWithValidationError($response, $validator->errors());
-    }
-
-    //
+    /**
+     * delete a team
+     * @param  ServerRequestInterface $request  [description]
+     * @param  ResponseInterface      $response [description]
+     * @param  [type]                 $args     [description]
+     * @return [type]                           [description]
+     */
     public function teamDelete(ServerRequestInterface $request, ResponseInterface $response, $args)
     {
-        $teamId = $args['teamId'];
+        extract($args);
 
         $command = new DeleteTeamCommand($teamId);
 
@@ -86,22 +82,16 @@ class TeamController extends ApiController
         return $response;
     }
 
-    //
-    public function followDelete(ServerRequestInterface $request, ResponseInterface $response, $args)
-    {
-        $teamId = $args['teamId'];
-        $followId = $args['followId'];
-
-        $command = new DeleteFollowCommand($teamId, $followId);
-
-        $this->container->get('commandBus')->handle($command);
-        return $response;
-    }
-
-    //
+    /**
+     * update a team
+     * @param  ServerRequestInterface $request  [description]
+     * @param  ResponseInterface      $response [description]
+     * @param  [type]                 $args     [description]
+     * @return [type]                           [description]
+     */
     public function teamPatch(ServerRequestInterface $request, ResponseInterface $response, $args)
     {
-        $teamId = $args['teamId'];
+        extract($args);
         $parsedBody = $request->getParsedBody();
 
         $command = new UpdateTeamCommand(

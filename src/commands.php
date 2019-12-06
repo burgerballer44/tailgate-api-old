@@ -17,6 +17,10 @@ use Tailgate\Application\Command\Group\DeletePlayerCommand;
 use Tailgate\Application\Command\Group\DeletePlayerHandler;
 use Tailgate\Application\Command\Group\DeleteScoreCommand;
 use Tailgate\Application\Command\Group\DeleteScoreHandler;
+use Tailgate\Application\Command\Group\DeleteFollowCommand;
+use Tailgate\Application\Command\Group\DeleteFollowHandler;
+use Tailgate\Application\Command\Group\FollowTeamCommand;
+use Tailgate\Application\Command\Group\FollowTeamHandler;
 use Tailgate\Application\Command\Group\SubmitScoreForGroupCommand;
 use Tailgate\Application\Command\Group\SubmitScoreForGroupHandler;
 use Tailgate\Application\Command\Group\UpdateGroupCommand;
@@ -41,12 +45,8 @@ use Tailgate\Application\Command\Season\UpdateSeasonHandler;
 
 use Tailgate\Application\Command\Team\AddTeamCommand;
 use Tailgate\Application\Command\Team\AddTeamHandler;
-use Tailgate\Application\Command\Team\DeleteFollowCommand;
-use Tailgate\Application\Command\Team\DeleteFollowHandler;
 use Tailgate\Application\Command\Team\DeleteTeamCommand;
 use Tailgate\Application\Command\Team\DeleteTeamHandler;
-use Tailgate\Application\Command\Team\FollowTeamCommand;
-use Tailgate\Application\Command\Team\FollowTeamHandler;
 use Tailgate\Application\Command\Team\UpdateTeamCommand;
 use Tailgate\Application\Command\Team\UpdateTeamHandler;
 
@@ -81,6 +81,8 @@ return function (App $app) {
             DeleteMemberCommand::class => new DeleteMemberHandler($container->get('repository.group')),
             DeletePlayerCommand::class => new DeletePlayerHandler($container->get('repository.group')),
             DeleteScoreCommand::class => new DeleteScoreHandler($container->get('repository.group')),
+            DeleteFollowCommand::class => new DeleteFollowHandler($container->get('repository.group')),
+            FollowTeamCommand::class => new FollowTeamHandler($container->get('repository.group')),
             SubmitScoreForGroupCommand::class => new SubmitScoreForGroupHandler($container->get('repository.group')),
             UpdateGroupCommand::class => new UpdateGroupHandler($container->get('repository.group')),
             UpdateMemberCommand::class => new UpdateMemberHandler($container->get('repository.group')),
@@ -96,9 +98,7 @@ return function (App $app) {
 
 
             AddTeamCommand::class => new AddTeamHandler($container->get('repository.team')),
-            DeleteFollowCommand::class => new DeleteFollowHandler($container->get('repository.team')),
             DeleteTeamCommand::class => new DeleteTeamHandler($container->get('repository.team')),
-            FollowTeamCommand::class => new FollowTeamHandler($container->get('repository.team')),
             UpdateTeamCommand::class => new UpdateTeamHandler($container->get('repository.team')),
 
 

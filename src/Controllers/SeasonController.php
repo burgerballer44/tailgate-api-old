@@ -17,25 +17,40 @@ use Tailgate\Application\Command\Season\UpdateSeasonCommand;
 
 class SeasonController extends ApiController
 {
-    // admin - can view all seasons
-    // regular - can view all seasons
+    /**
+     * view all seasons
+     * @param  ServerRequestInterface $request  [description]
+     * @param  ResponseInterface      $response [description]
+     * @param  [type]                 $args     [description]
+     * @return [type]                           [description]
+     */
     public function all(ServerRequestInterface $request, ResponseInterface $response, $args)
     {
         $seasons = $this->container->get('queryBus')->handle(new AllSeasonsQuery());
-       return $this->respondWithData($response, $seasons);
+        return $this->respondWithData($response, $seasons);
     }
 
-    // admin - can view details of a season
-    // regular - can view details of a season
+    /**
+     * view single season
+     * @param  ServerRequestInterface $request  [description]
+     * @param  ResponseInterface      $response [description]
+     * @param  [type]                 $args     [description]
+     * @return [type]                           [description]
+     */
     public function view(ServerRequestInterface $request, ResponseInterface $response, $args)
     {
-        $seasonId = $args['seasonId'];
+        extract($args);
         $season = $this->container->get('queryBus')->handle(new SeasonQuery($seasonId));
-        
         return $this->respondWithData($response, $season);
     }
 
-    // admin - can create a season
+    /**
+     * create a season
+     * @param  ServerRequestInterface $request  [description]
+     * @param  ResponseInterface      $response [description]
+     * @param  [type]                 $args     [description]
+     * @return [type]                           [description]
+     */
     public function createPost(ServerRequestInterface $request, ResponseInterface $response, $args)
     {
         $parsedBody = $request->getParsedBody();
@@ -53,15 +68,67 @@ class SeasonController extends ApiController
         if ($validator->assert($command)) {
             $this->container->get('commandBus')->handle($command);
             return $response;
-          }
+        }
 
         return $this->respondWithValidationError($response, $validator->errors());
     }
 
-    // admin - can add a game to a season
+    /**
+     * update a season
+     * @param  ServerRequestInterface $request  [description]
+     * @param  ResponseInterface      $response [description]
+     * @param  [type]                 $args     [description]
+     * @return [type]                           [description]
+     */
+    public function seasonPatch(ServerRequestInterface $request, ResponseInterface $response, $args)
+    {
+        extract($args);
+        $parsedBody = $request->getParsedBody();
+        
+        $command = new UpdateSeasonCommand(
+            $seasonId,
+            $parsedBody['name'] ?? '',
+            $parsedBody['sport'] ?? '',
+            $parsedBody['seasonType'] ?? '',
+            $parsedBody['seasonStart'] ?? '',
+            $parsedBody['seasonEnd'] ?? ''
+        );
+
+        $validator = $this->container->get('validationInflector')->getValidatorClass($command);
+
+        if ($validator->assert($command)) {
+            $this->container->get('commandBus')->handle($command);
+            return $response;
+        }
+
+        return $this->respondWithValidationError($response, $validator->errors());
+    }
+
+    /**
+     * delete a season
+     * @param  ServerRequestInterface $request  [description]
+     * @param  ResponseInterface      $response [description]
+     * @param  [type]                 $args     [description]
+     * @return [type]                           [description]
+     */
+    public function seasonDelete(ServerRequestInterface $request, ResponseInterface $response, $args)
+    {
+        extract($args);
+        $command = new DeleteSeasonCommand($seasonId);
+        $this->container->get('commandBus')->handle($command);
+        return $response;
+    }
+
+    /**
+     * add a game to a season
+     * @param  ServerRequestInterface $request  [description]
+     * @param  ResponseInterface      $response [description]
+     * @param  [type]                 $args     [description]
+     * @return [type]                           [description]
+     */
     public function gamePost(ServerRequestInterface $request, ResponseInterface $response, $args)
     {
-        $seasonId = $args['seasonId'];
+        extract($args);
         $parsedBody = $request->getParsedBody();
 
         $command = new AddGameCommand(
@@ -81,12 +148,16 @@ class SeasonController extends ApiController
         return $this->respondWithValidationError($response, $validator->errors());
     }
 
-    // admin - can add the final score to a game
+    /**
+     * change score for a game
+     * @param  ServerRequestInterface $request  [description]
+     * @param  ResponseInterface      $response [description]
+     * @param  [type]                 $args     [description]
+     * @return [type]                           [description]
+     */
     public function updateGameScorePatch(ServerRequestInterface $request, ResponseInterface $response, $args)
     {
-        $seasonId = $args['seasonId'];
-        $gameId = $args['gameId'];
-
+        extract($args);
         $parsedBody = $request->getParsedBody();
         
         $command = new UpdateGameScoreCommand(
@@ -107,49 +178,18 @@ class SeasonController extends ApiController
         return $this->respondWithValidationError($response, $validator->errors());
     }
 
-    //
-    public function seasonDelete(ServerRequestInterface $request, ResponseInterface $response, $args)
-    {
-        $seasonId = $args['seasonId'];
-        
-        $command = new DeleteSeasonCommand($seasonId);
-        $this->container->get('commandBus')->handle($command);
-        return $response;
-    }
-
-    //
+    /**
+     * delete a game
+     * @param  ServerRequestInterface $request  [description]
+     * @param  ResponseInterface      $response [description]
+     * @param  [type]                 $args     [description]
+     * @return [type]                           [description]
+     */
     public function gameDelete(ServerRequestInterface $request, ResponseInterface $response, $args)
     {
-        $seasonId = $args['seasonId'];
-        $gameId = $args['gameId'];
-        
+        extract($args);
         $command = new DeleteGameCommand($seasonId, $gameId);
         $this->container->get('commandBus')->handle($command);
         return $response;
-    }
-
-    //
-    public function seasonPatch(ServerRequestInterface $request, ResponseInterface $response, $args)
-    {
-        $seasonId = $args['seasonId'];
-        $parsedBody = $request->getParsedBody();
-        
-        $command = new UpdateSeasonCommand(
-            $seasonId,
-            $parsedBody['name'] ?? '',
-            $parsedBody['sport'] ?? '',
-            $parsedBody['seasonType'] ?? '',
-            $parsedBody['seasonStart'] ?? '',
-            $parsedBody['seasonEnd'] ?? ''
-        );
-
-        $validator = $this->container->get('validationInflector')->getValidatorClass($command);
-
-        if ($validator->assert($command)) {
-            $this->container->get('commandBus')->handle($command);
-            return $response;
-        }
-
-        return $this->respondWithValidationError($response, $validator->errors());
     }
 }

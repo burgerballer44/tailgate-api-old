@@ -47,6 +47,7 @@ return function (App $app) {
                 $container->get('viewRepository.member'),
                 $container->get('viewRepository.player'),
                 $container->get('viewRepository.score'),
+                $container->get('viewRepository.follow'),
                 $container->get('transformer.group')
             ),
             GroupInviteCodeQuery::class => new GroupInviteCodeQueryHandler(

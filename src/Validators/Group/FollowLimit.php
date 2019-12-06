@@ -1,10 +1,11 @@
 <?php
 
-namespace TailgateApi\Validators\Team;
+namespace TailgateApi\Validators\Group;
 
 use Respect\Validation\Rules\AbstractRule;
-use Tailgate\Domain\Model\Team\FollowViewRepositoryInterface;
+use Tailgate\Domain\Model\Group\FollowViewRepositoryInterface;
 use Tailgate\Domain\Model\Group\GroupId;
+use Tailgate\Domain\Model\Group\FollowView;
 
 class FollowLimit extends AbstractRule
 {
@@ -18,18 +19,18 @@ class FollowLimit extends AbstractRule
     }
 
     /**
-     * returns false when the group follows too many teams
+     * group should only follow one team at a time
      * @param  [type] $input [description]
      * @return [type]        [description]
      */
     public function validate($input)
-    {   
+    {
         try {
-            $followViews = $this->followViewRepository->getAllByGroup(GroupId::fromString($input));
+            $followView = $this->followViewRepository->getByGroup(GroupId::fromString($input));
         } catch (\Throwable $e) {
-            $followViews = false;
+            $followView = null;
         }
 
-        return count($followViews) < self::FOLLOW_LIMIT;
+        return !$followView instanceof FollowView;
     }
 }

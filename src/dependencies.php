@@ -305,13 +305,6 @@ return function (App $app) {
     $container->set('transformer.score', function ($container) {
         return $container->get('transformer.score.array');
     });
-    $container->set('transformer.group.array', function ($container) {
-        return new GroupViewArrayDataTransformer(
-            $container->get('transformer.member'),
-            $container->get('transformer.player'),
-            $container->get('transformer.score')
-        );
-    });
     $container->set('transformer.group', function ($container) {
         return $container->get('transformer.group.array');
     });
@@ -320,6 +313,14 @@ return function (App $app) {
     });
     $container->set('transformer.follow', function ($container) {
         return $container->get('transformer.follow.array');
+    });
+    $container->set('transformer.group.array', function ($container) {
+        return new GroupViewArrayDataTransformer(
+            $container->get('transformer.member'),
+            $container->get('transformer.player'),
+            $container->get('transformer.score'),
+            $container->get('transformer.follow')
+        );
     });
     $container->set('transformer.game.array', function ($container) {
         return new GameViewArrayDataTransformer();
