@@ -38,12 +38,9 @@ return function (App $app) {
             $group->delete('/{groupId}/follow/{followId}', \TailgateApi\Controllers\GroupController::class . ':followDelete');
             $group->patch('/{groupId}/member/{memberId}', \TailgateApi\Controllers\GroupController::class . ':memberPatch');
             $group->delete('/{groupId}/member/{memberId}', \TailgateApi\Controllers\GroupController::class . ':memberDelete');
-            
-
-            $group->post('/{groupId}/member', \TailgateApi\Controllers\GroupController::class . ':memberPost');
             $group->post('/{groupId}/player/{playerId}/score', \TailgateApi\Controllers\GroupController::class . ':scorePost');
-            $group->delete('/{groupId}/score/{scoreId}', \TailgateApi\Controllers\GroupController::class . ':scoreDelete');
             $group->patch('/{groupId}/score/{scoreId}', \TailgateApi\Controllers\GroupController::class . ':scorePatch');
+            $group->delete('/{groupId}/score/{scoreId}', \TailgateApi\Controllers\GroupController::class . ':scoreDelete');
         });
 
         // teams
@@ -71,10 +68,10 @@ return function (App $app) {
 
             // groups
             $group->group('/groups', function (Group $group) {
-                $group->get('', \TailgateApi\Controllers\GroupController::class . ':all');
-                $group->post('', \TailgateApi\Controllers\GroupController::class . ':createPost');
-                $group->get('/{groupId}', \TailgateApi\Controllers\GroupController::class . ':view');
-                $group->patch('/{groupId}', \TailgateApi\Controllers\GroupController::class . ':groupPatch');
+                $group->get('', \TailgateApi\Controllers\GroupController::class . ':adminAll');
+                $group->get('/{groupId}', \TailgateApi\Controllers\GroupController::class . ':adminView');
+                $group->patch('/{groupId}', \TailgateApi\Controllers\GroupController::class . ':adminGroupPatch');
+                
                 $group->delete('/{groupId}', \TailgateApi\Controllers\GroupController::class . ':groupDelete');
                 $group->post('/{groupId}/member', \TailgateApi\Controllers\GroupController::class . ':memberPost');
                 $group->patch('/{groupId}/member/{memberId}', \TailgateApi\Controllers\GroupController::class . ':memberPatch');

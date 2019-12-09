@@ -14,12 +14,16 @@ use Tailgate\Application\Query\User\UserResetPasswordTokenQueryHandler;
 
 use Tailgate\Application\Query\Group\GroupQuery;
 use Tailgate\Application\Query\Group\GroupQueryHandler;
+use Tailgate\Application\Query\Group\GroupByUserQuery;
+use Tailgate\Application\Query\Group\GroupByUserQueryHandler;
 use Tailgate\Application\Query\Group\GroupInviteCodeQuery;
 use Tailgate\Application\Query\Group\GroupInviteCodeQueryHandler;
 use Tailgate\Application\Query\Group\QueryGroupsQuery;
 use Tailgate\Application\Query\Group\QueryGroupsQueryHandler;
 use Tailgate\Application\Query\Group\AllGroupsQuery;
 use Tailgate\Application\Query\Group\AllGroupsQueryHandler;
+use Tailgate\Application\Query\Group\AllGroupsByUserQuery;
+use Tailgate\Application\Query\Group\AllGroupsByUserQueryHandler;
 
 use Tailgate\Application\Query\Team\TeamQuery;
 use Tailgate\Application\Query\Team\TeamQueryHandler;
@@ -42,6 +46,14 @@ return function (App $app) {
             UserResetPasswordTokenQuery::class => new UserResetPasswordTokenQueryHandler($container->get('viewRepository.user'), $container->get('transformer.user')),
             AllUsersQuery::class => new AllUsersQueryHandler($container->get('viewRepository.user'), $container->get('transformer.user')),
 
+            GroupByUserQuery::class => new GroupByUserQueryHandler(
+                $container->get('viewRepository.group'),
+                $container->get('viewRepository.member'),
+                $container->get('viewRepository.player'),
+                $container->get('viewRepository.score'),
+                $container->get('viewRepository.follow'),
+                $container->get('transformer.group')
+            ),
             GroupQuery::class => new GroupQueryHandler(
                 $container->get('viewRepository.group'),
                 $container->get('viewRepository.member'),
@@ -59,6 +71,7 @@ return function (App $app) {
                 $container->get('transformer.group')
             ),
             AllGroupsQuery::class => new AllGroupsQueryHandler($container->get('viewRepository.group'), $container->get('transformer.group')),
+            AllGroupsByUserQuery::class => new AllGroupsByUserQueryHandler($container->get('viewRepository.group'), $container->get('transformer.group')),
             
             TeamQuery::class => new TeamQueryHandler(
                 $container->get('viewRepository.team'),

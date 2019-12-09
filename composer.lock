@@ -70,12 +70,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/burgerballer44/tailgate.git",
-                "reference": "993c9ff3c466d8ef8b7df7670063a6036c04d548"
+                "reference": "9ea0bd86bf397c924e9f6604f7d672016f40ceea"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/burgerballer44/tailgate/zipball/993c9ff3c466d8ef8b7df7670063a6036c04d548",
-                "reference": "993c9ff3c466d8ef8b7df7670063a6036c04d548",
+                "url": "https://api.github.com/repos/burgerballer44/tailgate/zipball/9ea0bd86bf397c924e9f6604f7d672016f40ceea",
+                "reference": "9ea0bd86bf397c924e9f6604f7d672016f40ceea",
                 "shasum": ""
             },
             "require": {
@@ -114,7 +114,7 @@
                 "source": "https://github.com/burgerballer44/tailgate/tree/master",
                 "issues": "https://github.com/burgerballer44/tailgate/issues"
             },
-            "time": "2019-12-05T03:17:01+00:00"
+            "time": "2019-12-09T14:12:41+00:00"
         },
         {
             "name": "buttercup/protects",
@@ -165,16 +165,16 @@
         },
         {
             "name": "cakephp/cache",
-            "version": "3.8.6",
+            "version": "3.8.7",
             "source": {
                 "type": "git",
                 "url": "https://github.com/cakephp/cache.git",
-                "reference": "aa5c17495b23d843ba33bd81108e2031c38338c1"
+                "reference": "855a920c479925262575ec5b404010e22049098c"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/cakephp/cache/zipball/aa5c17495b23d843ba33bd81108e2031c38338c1",
-                "reference": "aa5c17495b23d843ba33bd81108e2031c38338c1",
+                "url": "https://api.github.com/repos/cakephp/cache/zipball/855a920c479925262575ec5b404010e22049098c",
+                "reference": "855a920c479925262575ec5b404010e22049098c",
                 "shasum": ""
             },
             "require": {
@@ -205,20 +205,20 @@
                 "caching",
                 "cakephp"
             ],
-            "time": "2019-10-30T04:06:05+00:00"
+            "time": "2019-11-20T00:00:46+00:00"
         },
         {
             "name": "cakephp/collection",
-            "version": "3.8.6",
+            "version": "3.8.7",
             "source": {
                 "type": "git",
                 "url": "https://github.com/cakephp/collection.git",
-                "reference": "1f15659671fbbd46d4a48b19bb8fac3ae4857cc1"
+                "reference": "3541cdd1739334fcbe301daed8d6cb9458903fdd"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/cakephp/collection/zipball/1f15659671fbbd46d4a48b19bb8fac3ae4857cc1",
-                "reference": "1f15659671fbbd46d4a48b19bb8fac3ae4857cc1",
+                "url": "https://api.github.com/repos/cakephp/collection/zipball/3541cdd1739334fcbe301daed8d6cb9458903fdd",
+                "reference": "3541cdd1739334fcbe301daed8d6cb9458903fdd",
                 "shasum": ""
             },
             "require": {
@@ -251,20 +251,20 @@
                 "collections",
                 "iterators"
             ],
-            "time": "2019-10-30T04:06:05+00:00"
+            "time": "2019-11-20T00:00:46+00:00"
         },
         {
             "name": "cakephp/core",
-            "version": "3.8.6",
+            "version": "3.8.7",
             "source": {
                 "type": "git",
                 "url": "https://github.com/cakephp/core.git",
-                "reference": "890cd8a00e1f2eb512cbe05e1c470a9eb6b2d9dd"
+                "reference": "e77b155f93fd63d1a944c07f27abc82651377956"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/cakephp/core/zipball/890cd8a00e1f2eb512cbe05e1c470a9eb6b2d9dd",
-                "reference": "890cd8a00e1f2eb512cbe05e1c470a9eb6b2d9dd",
+                "url": "https://api.github.com/repos/cakephp/core/zipball/e77b155f93fd63d1a944c07f27abc82651377956",
+                "reference": "e77b155f93fd63d1a944c07f27abc82651377956",
                 "shasum": ""
             },
             "require": {
@@ -301,20 +301,20 @@
                 "core",
                 "framework"
             ],
-            "time": "2019-10-30T04:06:05+00:00"
+            "time": "2019-11-19T13:39:32+00:00"
         },
         {
             "name": "cakephp/database",
-            "version": "3.8.6",
+            "version": "3.8.7",
             "source": {
                 "type": "git",
                 "url": "https://github.com/cakephp/database.git",
-                "reference": "d72f7f68efa1f85b982c60edd6fbefbd41d84e7b"
+                "reference": "c8a9123e8a393ac122bb0b51b100cafb3d34cece"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/cakephp/database/zipball/d72f7f68efa1f85b982c60edd6fbefbd41d84e7b",
-                "reference": "d72f7f68efa1f85b982c60edd6fbefbd41d84e7b",
+                "url": "https://api.github.com/repos/cakephp/database/zipball/c8a9123e8a393ac122bb0b51b100cafb3d34cece",
+                "reference": "c8a9123e8a393ac122bb0b51b100cafb3d34cece",
                 "shasum": ""
             },
             "require": {
@@ -349,20 +349,20 @@
                 "database abstraction",
                 "pdo"
             ],
-            "time": "2019-10-21T08:26:32+00:00"
+            "time": "2019-11-20T00:00:46+00:00"
         },
         {
             "name": "cakephp/datasource",
-            "version": "3.8.6",
+            "version": "3.8.7",
             "source": {
                 "type": "git",
                 "url": "https://github.com/cakephp/datasource.git",
-                "reference": "a9e63837df711d5ad19bf1eeeefe390218116d65"
+                "reference": "e2fff5bd4adb650d565c853fb25380657e2d1dbb"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/cakephp/datasource/zipball/a9e63837df711d5ad19bf1eeeefe390218116d65",
-                "reference": "a9e63837df711d5ad19bf1eeeefe390218116d65",
+                "url": "https://api.github.com/repos/cakephp/datasource/zipball/e2fff5bd4adb650d565c853fb25380657e2d1dbb",
+                "reference": "e2fff5bd4adb650d565c853fb25380657e2d1dbb",
                 "shasum": ""
             },
             "require": {
@@ -399,20 +399,20 @@
                 "entity",
                 "query"
             ],
-            "time": "2019-10-30T09:41:00+00:00"
+            "time": "2019-11-20T00:00:46+00:00"
         },
         {
             "name": "cakephp/log",
-            "version": "3.8.6",
+            "version": "3.8.7",
             "source": {
                 "type": "git",
                 "url": "https://github.com/cakephp/log.git",
-                "reference": "726495fab14a0beea38a2a40cabf8fca018aacef"
+                "reference": "9194c5aebaf30d4e9541e5635fa16f8c373af2f3"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/cakephp/log/zipball/726495fab14a0beea38a2a40cabf8fca018aacef",
-                "reference": "726495fab14a0beea38a2a40cabf8fca018aacef",
+                "url": "https://api.github.com/repos/cakephp/log/zipball/9194c5aebaf30d4e9541e5635fa16f8c373af2f3",
+                "reference": "9194c5aebaf30d4e9541e5635fa16f8c373af2f3",
                 "shasum": ""
             },
             "require": {
@@ -444,20 +444,20 @@
                 "log",
                 "logging"
             ],
-            "time": "2019-10-30T04:06:05+00:00"
+            "time": "2019-11-20T00:00:46+00:00"
         },
         {
             "name": "cakephp/utility",
-            "version": "3.8.6",
+            "version": "3.8.7",
             "source": {
                 "type": "git",
                 "url": "https://github.com/cakephp/utility.git",
-                "reference": "de3288dd74119e120c36576db33f401ec8e9549e"
+                "reference": "e60bf1dc7fbdbc0d717c950cbbeb3196d3bc0cf9"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/cakephp/utility/zipball/de3288dd74119e120c36576db33f401ec8e9549e",
-                "reference": "de3288dd74119e120c36576db33f401ec8e9549e",
+                "url": "https://api.github.com/repos/cakephp/utility/zipball/e60bf1dc7fbdbc0d717c950cbbeb3196d3bc0cf9",
+                "reference": "e60bf1dc7fbdbc0d717c950cbbeb3196d3bc0cf9",
                 "shasum": ""
             },
             "require": {
@@ -497,7 +497,7 @@
                 "string",
                 "utility"
             ],
-            "time": "2019-10-30T04:06:05+00:00"
+            "time": "2019-11-21T14:18:54+00:00"
         },
         {
             "name": "fig/http-message-util",
@@ -2537,16 +2537,16 @@
         },
         {
             "name": "tightenco/collect",
-            "version": "v6.5.2",
+            "version": "v6.6.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/tightenco/collect.git",
-                "reference": "402a89f11c55b86c5a081c267957a0c071375278"
+                "reference": "67525fa5ebaab40acb69f0507fa91e6bce212d5c"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/tightenco/collect/zipball/402a89f11c55b86c5a081c267957a0c071375278",
-                "reference": "402a89f11c55b86c5a081c267957a0c071375278",
+                "url": "https://api.github.com/repos/tightenco/collect/zipball/67525fa5ebaab40acb69f0507fa91e6bce212d5c",
+                "reference": "67525fa5ebaab40acb69f0507fa91e6bce212d5c",
                 "shasum": ""
             },
             "require": {
@@ -2583,7 +2583,7 @@
                 "collection",
                 "laravel"
             ],
-            "time": "2019-11-22T20:59:40+00:00"
+            "time": "2019-12-06T22:56:34+00:00"
         },
         {
             "name": "vlucas/phpdotenv",

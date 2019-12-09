@@ -21,7 +21,7 @@ use Tailgate\Application\Command\User\UpdateUserCommand;
 class UserController extends ApiController
 {   
     /**
-     * register a user as pending
+     * register a new user and mark as pending
      * @param  ServerRequestInterface $request  [description]
      * @param  ResponseInterface      $response [description]
      * @param  [type]                 $args     [description]

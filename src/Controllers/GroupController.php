@@ -6,9 +6,10 @@ use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
 use Tailgate\Application\Query\Group\GroupQuery;
-use Tailgate\Application\Query\Group\QueryGroupsQuery;
+use Tailgate\Application\Query\Group\GroupByUserQuery;
 use Tailgate\Application\Query\Group\GroupInviteCodeQuery;
 use Tailgate\Application\Query\Group\AllGroupsQuery;
+use Tailgate\Application\Query\Group\AllGroupsByUserQuery;
 use Tailgate\Application\Command\Group\AddMemberToGroupCommand;
 use Tailgate\Application\Command\Group\AddPlayerToGroupCommand;
 use Tailgate\Application\Command\Group\CreateGroupCommand;
@@ -64,12 +65,12 @@ class GroupController extends ApiController
     public function all(ServerRequestInterface $request, ResponseInterface $response, $args)
     {
         $userId = $request->getAttribute('userId');
-        $groups = $this->container->get('queryBus')->handle(new AllGroupsQuery($userId));
+        $groups = $this->container->get('queryBus')->handle(new AllGroupsByUserQuery($userId));
         return $this->respondWithData($response, $groups);
     }
 
     /**
-     * create a group, assign authenticed user as owner, and member
+     * create a group, assign authenticed user as owner if not admin, and member
      * @param  ServerRequestInterface $request  [description]
      * @param  ResponseInterface      $response [description]
      * @param  [type]                 $args     [description]
@@ -77,10 +78,9 @@ class GroupController extends ApiController
      */
     public function createPost(ServerRequestInterface $request, ResponseInterface $response, $args)
     {
-        $userId = $request->getAttribute('userId');
         $parsedBody = $request->getParsedBody();
 
-        $command = new CreateGroupCommand($parsedBody['name'], $userId);
+        $command = new CreateGroupCommand($parsedBody['name'], $parsedBody['userId']);
 
         $validator = $this->container->get('validationInflector')->getValidatorClass($command);
         
@@ -103,7 +103,7 @@ class GroupController extends ApiController
     {
         $userId = $request->getAttribute('userId');
         extract($args);
-        $group = $this->container->get('queryBus')->handle(new GroupQuery($userId, $groupId));
+        $group = $this->container->get('queryBus')->handle(new GroupByUserQuery($userId, $groupId));
         return $this->respondWithData($response, $group);
     }
 
@@ -255,7 +255,166 @@ class GroupController extends ApiController
         return $response;
     }
 
+    /**
+     * submit a score for a game in a group by a player
+     * @param  ServerRequestInterface $request  [description]
+     * @param  ResponseInterface      $response [description]
+     * @param  [type]                 $args     [description]
+     * @return [type]                           [description]
+     */
+    public function scorePost(ServerRequestInterface $request, ResponseInterface $response, $args)
+    {
+        $userId = $request->getAttribute('userId');
+        $user = $request->getAttribute('user');
+        extract($args);
+        $parsedBody = $request->getParsedBody();
+        $group = $this->container->get('queryBus')->handle(new GroupQuery($userId, $groupId));
+        $member = collect($group['members'])->firstWhere('userId', $userId);
+        $playersIds = collect($group['players'])->where('memberId', $member['memberId'])->pluck('playerId');
 
+        // must be admin, group admin, or thw owner of player
+        if ('Group-Admin' != $member['role'] && 'Admin' != $user['role'] && !$playersIds->contains($playerId)) {
+            throw new \Exception("Hey! Invalid permissions!");
+        }
+
+        $command = new SubmitScoreForGroupCommand(
+            $groupId,
+            $playerId,
+            $parsedBody['gameId'],
+            $parsedBody['homeTeamPrediction'],
+            $parsedBody['awayTeamPrediction']
+        );
+
+        $validator = $this->container->get('validationInflector')->getValidatorClass($command);
+        
+        if ($validator->assert($command)) {
+            $this->container->get('commandBus')->handle($command);
+            return $response;
+        }
+
+        return $this->respondWithValidationError($response, $validator->errors());
+    }
+
+    /**
+     * update a score
+     * @param  ServerRequestInterface $request  [description]
+     * @param  ResponseInterface      $response [description]
+     * @param  [type]                 $args     [description]
+     * @return [type]                           [description]
+     */
+    public function scorePatch(ServerRequestInterface $request, ResponseInterface $response, $args)
+    {
+        $userId = $request->getAttribute('userId');
+        $user = $request->getAttribute('user');
+        extract($args);
+        $parsedBody = $request->getParsedBody();
+        $group = $this->container->get('queryBus')->handle(new GroupQuery($userId, $groupId));
+        $member = collect($group['members'])->firstWhere('userId', $userId);
+        $scoreIds = collect($group['scores'])->where('memberId', $member['memberId'])->pluck('scoreId');
+
+        // must be admin, group admin, or thw owner of score
+        if ('Group-Admin' != $member['role'] && 'Admin' != $user['role'] && !$scoreIds->contains($scoreId)) {
+            throw new \Exception("Hey! Invalid permissions!");
+        }
+
+        $command = new UpdateScoreForGroupCommand(
+            $groupId,
+            $scoreId,
+            $parsedBody['homeTeamPrediction'],
+            $parsedBody['awayTeamPrediction']
+        );
+
+        $validator = $this->container->get('validationInflector')->getValidatorClass($command);
+        
+        if ($validator->assert($command)) {
+            $this->container->get('commandBus')->handle($command);
+            return $response;
+        }
+
+        return $this->respondWithValidationError($response, $validator->errors());
+    }
+
+    /**
+     * delete a score
+     * @param  ServerRequestInterface $request  [description]
+     * @param  ResponseInterface      $response [description]
+     * @param  [type]                 $args     [description]
+     * @return [type]                           [description]
+     */
+    public function scoreDelete(ServerRequestInterface $request, ResponseInterface $response, $args)
+    {
+        $userId = $request->getAttribute('userId');
+        $user = $request->getAttribute('user');
+        extract($args);
+        $parsedBody = $request->getParsedBody();
+        $group = $this->container->get('queryBus')->handle(new GroupQuery($userId, $groupId));
+        $member = collect($group['members'])->firstWhere('userId', $userId);
+        $scoreIds = collect($group['scores'])->where('memberId', $member['memberId'])->pluck('scoreId');
+
+        // must be admin, group admin, or thw owner of score
+        if ('Group-Admin' != $member['role'] && 'Admin' != $user['role'] && !$scoreIds->contains($scoreId)) {
+            throw new \Exception("Hey! Invalid permissions!");
+        }
+
+        $command = new DeleteScoreCommand($groupId, $scoreId);
+        $this->container->get('commandBus')->handle($command);
+        return $response;;
+    }
+
+    /**
+     * query groups for admin
+     * @param  ServerRequestInterface $request  [description]
+     * @param  ResponseInterface      $response [description]
+     * @param  [type]                 $args     [description]
+     * @return [type]                           [description]
+     */
+    public function adminAll(ServerRequestInterface $request, ResponseInterface $response, $args)
+    {
+        $groups = $this->container->get('queryBus')->handle(new AllGroupsQuery());
+        return $this->respondWithData($response, $groups);
+    }
+
+    /**
+     * view a group for admin
+     * @param  ServerRequestInterface $request  [description]
+     * @param  ResponseInterface      $response [description]
+     * @param  [type]                 $args     [description]
+     * @return [type]                           [description]
+     */
+    public function adminView(ServerRequestInterface $request, ResponseInterface $response, $args)
+    {
+        extract($args);
+        $groups = $this->container->get('queryBus')->handle(new GroupQuery($groupId));
+        return $this->respondWithData($response, $groups);
+    }
+
+    /**
+     * update a group
+     * @param  ServerRequestInterface $request  [description]
+     * @param  ResponseInterface      $response [description]
+     * @param  [type]                 $args     [description]
+     * @return [type]                           [description]
+     */
+    public function adminGroupPatch(ServerRequestInterface $request, ResponseInterface $response, $args)
+    {
+        extract($args);
+        $parsedBody = $request->getParsedBody();
+
+        $command = new UpdateGroupCommand(
+            $groupId,
+            $parsedBody['name'],
+            $parsedBody['ownerId']
+        );
+
+        $validator = $this->container->get('validationInflector')->getValidatorClass($command);
+        
+        if ($validator->assert($command)) {
+            $this->container->get('commandBus')->handle($command);
+            return $response;
+        }
+
+        return $this->respondWithValidationError($response, $validator->errors());
+    }
 
 
 
@@ -287,33 +446,6 @@ class GroupController extends ApiController
         return $this->respondWithValidationError($response, $validator->errors());
     }
 
-    // admin - can submit a score for anyone
-    // regular - can submit a score for themselves
-    // regular Group Admin - can submit a score for group members
-    public function scorePost(ServerRequestInterface $request, ResponseInterface $response, $args)
-    {
-        $groupId = $args['groupId'];
-        $playerId = $args['playerId'];
-        $parsedBody = $request->getParsedBody();
-
-        $command = new SubmitScoreForGroupCommand(
-            $groupId,
-            $playerId,
-            $parsedBody['gameId'],
-            $parsedBody['homeTeamPrediction'],
-            $parsedBody['awayTeamPrediction']
-        );
-
-        $validator = $this->container->get('validationInflector')->getValidatorClass($command);
-        
-        if ($validator->assert($command)) {
-            $this->container->get('commandBus')->handle($command);
-            return $response;
-        }
-
-        return $this->respondWithValidationError($response, $validator->errors());
-    }
-
     // 
     public function memberDelete(ServerRequestInterface $request, ResponseInterface $response, $args)
     {
@@ -325,39 +457,7 @@ class GroupController extends ApiController
         return $response;
     }
 
-    // 
-    public function scoreDelete(ServerRequestInterface $request, ResponseInterface $response, $args)
-    {
-        $groupId = $args['groupId'];
-        $scoreId = $args['scoreId'];
 
-        $command = new DeleteScoreCommand($groupId, $scoreId);
-        $this->container->get('commandBus')->handle($command);
-        return $response;;
-    }
-
-    // 
-    public function groupPatch(ServerRequestInterface $request, ResponseInterface $response, $args)
-    {
-        $userId = $request->getAttribute('userId');
-        $groupId = $args['groupId'];
-        $parsedBody = $request->getParsedBody();
-
-        $command = new UpdateGroupCommand(
-            $groupId,
-            $parsedBody['name'],
-            $userId
-        );
-
-        $validator = $this->container->get('validationInflector')->getValidatorClass($command);
-        
-        if ($validator->assert($command)) {
-            $this->container->get('commandBus')->handle($command);
-            return $response;
-        }
-
-        return $this->respondWithValidationError($response, $validator->errors());
-    }
 
     // 
     public function memberPatch(ServerRequestInterface $request, ResponseInterface $response, $args)
@@ -383,41 +483,4 @@ class GroupController extends ApiController
         return $this->respondWithValidationError($response, $validator->errors());
     }
 
-    // 
-    public function scorePatch(ServerRequestInterface $request, ResponseInterface $response, $args)
-    {
-        $groupId = $args['groupId'];
-        $scoreId = $args['scoreId'];
-        $parsedBody = $request->getParsedBody();
-
-        $command = new UpdateScoreForGroupCommand(
-            $groupId,
-            $scoreId,
-            $parsedBody['homeTeamPrediction'],
-            $parsedBody['awayTeamPrediction']
-        );
-
-        $validator = $this->container->get('validationInflector')->getValidatorClass($command);
-        
-        if ($validator->assert($command)) {
-            $this->container->get('commandBus')->handle($command);
-            return $response;
-        }
-
-        return $this->respondWithValidationError($response, $validator->errors());
-    }
-
-
-
-
-
-    // public function query(ServerRequestInterface $request, ResponseInterface $response, $args)
-    // {
-    //     $params = $request->getQueryParams();
-    //     $userId = $params['userId'] ?? '';
-    //     $name = $params['name'] ?? '';
-
-    //     $groups = $this->container->get('queryBus')->handle(new QueryGroupsQuery($userId, $name));
-    //     return $this->respondWithData($response, $groups);
-    // }
 }
