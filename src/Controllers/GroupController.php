@@ -130,6 +130,29 @@ class GroupController extends ApiController
     }
 
     /**
+     * delete member from group
+     * @param  ServerRequestInterface $request  [description]
+     * @param  ResponseInterface      $response [description]
+     * @param  [type]                 $args     [description]
+     * @return [type]                           [description]
+     */
+    public function memberDelete(ServerRequestInterface $request, ResponseInterface $response, $args)
+    {
+        $userId = $request->getAttribute('userId');
+        extract($args);
+        $group = $this->container->get('queryBus')->handle(new GroupByUserQuery($userId, $groupId));
+        $member = collect($group['members'])->firstWhere('userId', $userId);
+
+        if ('Group-Admin' != $member['role']) {
+            throw new \Exception("Hey! Invalid permissions!");
+        }
+
+        $command = new DeleteMemberCommand($groupId, $memberId);
+        $this->container->get('commandBus')->handle($command);
+        return $response;
+    }
+
+    /**
      * add a player to group
      * @param  ServerRequestInterface $request  [description]
      * @param  ResponseInterface      $response [description]
@@ -361,6 +384,23 @@ class GroupController extends ApiController
         return $response;;
     }
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     /**
      * query groups for admin
      * @param  ServerRequestInterface $request  [description]
@@ -384,8 +424,8 @@ class GroupController extends ApiController
     public function adminView(ServerRequestInterface $request, ResponseInterface $response, $args)
     {
         extract($args);
-        $groups = $this->container->get('queryBus')->handle(new GroupQuery($groupId));
-        return $this->respondWithData($response, $groups);
+        $group = $this->container->get('queryBus')->handle(new GroupQuery($groupId));
+        return $this->respondWithData($response, $group);
     }
 
     /**
@@ -416,19 +456,32 @@ class GroupController extends ApiController
         return $this->respondWithValidationError($response, $validator->errors());
     }
 
-
-
-
-
-
-
-
-    // admin - can add any user to any group
-    // regular - can join a group by invitation code
-    // regular Group Admin - can add members to their own group by invitation email that would create a pending user
-    public function memberPost(ServerRequestInterface $request, ResponseInterface $response, $args)
+    /**
+     * delete a group
+     * @param  ServerRequestInterface $request  [description]
+     * @param  ResponseInterface      $response [description]
+     * @param  [type]                 $args     [description]
+     * @return [type]                           [description]
+     */
+    public function adminGroupDelete(ServerRequestInterface $request, ResponseInterface $response, $args)
     {
-        $groupId = $args['groupId'];
+        extract($args);
+        $group = $this->container->get('queryBus')->handle(new GroupQuery($groupId));
+        $command = new DeleteGroupCommand($groupId);
+        $this->container->get('commandBus')->handle($command);
+        return $response;
+    }
+    
+    /**
+     * add user to a group to become a member
+     * @param  ServerRequestInterface $request  [description]
+     * @param  ResponseInterface      $response [description]
+     * @param  [type]                 $args     [description]
+     * @return [type]                           [description]
+     */
+    public function adminMemberPost(ServerRequestInterface $request, ResponseInterface $response, $args)
+    {
+        extract($args);
         $parsedBody = $request->getParsedBody();
 
         $command = new AddMemberToGroupCommand(
@@ -446,24 +499,62 @@ class GroupController extends ApiController
         return $this->respondWithValidationError($response, $validator->errors());
     }
 
-    // 
-    public function memberDelete(ServerRequestInterface $request, ResponseInterface $response, $args)
-    {
-        $groupId = $args['groupId'];
-        $memberId = $args['memberId'];
+    /**
+     * group follows a team for admin
+     * @param  ServerRequestInterface $request  [description]
+     * @param  ResponseInterface      $response [description]
+     * @param  [type]                 $args     [description]
+     * @return [type]                           [description]
+     */
+    public function adminFollowPost(ServerRequestInterface $request, ResponseInterface $response, $args)
+    {   
+        extract($args);
+        $parsedBody = $request->getParsedBody();
+        $group = $this->container->get('queryBus')->handle(new GroupQuery($groupId));
 
-        $command = new DeleteMemberCommand($groupId, $memberId);
+        $command = new FollowTeamCommand(
+            $groupId,
+            $parsedBody['teamId'] ?? '',
+            $parsedBody['seasonId'] ?? ''
+        );
+
+        $validator = $this->container->get('validationInflector')->getValidatorClass($command);
+        
+        if ($validator->assert($command)) {
+            $this->container->get('commandBus')->handle($command);
+            return $response;
+        }
+
+        return $this->respondWithValidationError($response, $validator->errors());
+    }
+
+    /**
+     * delete a follow for admin
+     * @param  ServerRequestInterface $request  [description]
+     * @param  ResponseInterface      $response [description]
+     * @param  [type]                 $args     [description]
+     * @return [type]                           [description]
+     */
+    public function adminFollowDelete(ServerRequestInterface $request, ResponseInterface $response, $args)
+    {
+        extract($args);
+        $parsedBody = $request->getParsedBody();
+        $group = $this->container->get('queryBus')->handle(new GroupQuery($groupId));
+        $command = new DeleteFollowCommand($groupId, $followId);
         $this->container->get('commandBus')->handle($command);
         return $response;
     }
 
-
-
-    // 
-    public function memberPatch(ServerRequestInterface $request, ResponseInterface $response, $args)
+    /**
+     * update a member for admin
+     * @param  ServerRequestInterface $request  [description]
+     * @param  ResponseInterface      $response [description]
+     * @param  [type]                 $args     [description]
+     * @return [type]                           [description]
+     */
+    public function adminMemberPatch(ServerRequestInterface $request, ResponseInterface $response, $args)
     {
-        $groupId = $args['groupId'];
-        $memberId = $args['memberId'];
+        extract($args);
         $parsedBody = $request->getParsedBody();
 
         $command = new UpdateMemberCommand(
@@ -481,6 +572,140 @@ class GroupController extends ApiController
         }
 
         return $this->respondWithValidationError($response, $validator->errors());
+    }
+
+    /**
+     * delete member from group
+     * @param  ServerRequestInterface $request  [description]
+     * @param  ResponseInterface      $response [description]
+     * @param  [type]                 $args     [description]
+     * @return [type]                           [description]
+     */
+    public function adminMemberDelete(ServerRequestInterface $request, ResponseInterface $response, $args)
+    {
+        extract($args);
+        $command = new DeleteMemberCommand($groupId, $memberId);
+        $this->container->get('commandBus')->handle($command);
+        return $response;
+    }
+
+    /**
+     * add a player to group
+     * @param  ServerRequestInterface $request  [description]
+     * @param  ResponseInterface      $response [description]
+     * @param  [type]                 $args     [description]
+     * @return [type]                           [description]
+     */
+    public function adminPlayerPost(ServerRequestInterface $request, ResponseInterface $response, $args)
+    {
+        extract($args);
+        $parsedBody = $request->getParsedBody();
+
+        $command = new AddPlayerToGroupCommand(
+            $groupId,
+            $memberId,
+            $parsedBody['username'] ?? ''
+        );
+
+        $validator = $this->container->get('validationInflector')->getValidatorClass($command);
+        
+        if ($validator->assert($command)) {
+            $this->container->get('commandBus')->handle($command);
+            return $response;
+        }
+
+        return $this->respondWithValidationError($response, $validator->errors());
+    }
+
+    /**
+     * delete a player from a group
+     * @param  ServerRequestInterface $request  [description]
+     * @param  ResponseInterface      $response [description]
+     * @param  [type]                 $args     [description]
+     * @return [type]                           [description]
+     */
+    public function adminPlayerDelete(ServerRequestInterface $request, ResponseInterface $response, $args)
+    {
+        extract($args);
+        $group = $this->container->get('queryBus')->handle(new GroupQuery($groupId));
+        $command = new DeletePlayerCommand($groupId, $playerId);
+        $this->container->get('commandBus')->handle($command);
+        return $response;
+    }
+
+    /**
+     * submit a score for a game in a group by a player
+     * @param  ServerRequestInterface $request  [description]
+     * @param  ResponseInterface      $response [description]
+     * @param  [type]                 $args     [description]
+     * @return [type]                           [description]
+     */
+    public function adminScorePost(ServerRequestInterface $request, ResponseInterface $response, $args)
+    {
+        extract($args);
+        $parsedBody = $request->getParsedBody();
+
+        $command = new SubmitScoreForGroupCommand(
+            $groupId,
+            $playerId,
+            $parsedBody['gameId'],
+            $parsedBody['homeTeamPrediction'],
+            $parsedBody['awayTeamPrediction']
+        );
+
+        $validator = $this->container->get('validationInflector')->getValidatorClass($command);
+        
+        if ($validator->assert($command)) {
+            $this->container->get('commandBus')->handle($command);
+            return $response;
+        }
+
+        return $this->respondWithValidationError($response, $validator->errors());
+    }
+
+    /**
+     * update a score
+     * @param  ServerRequestInterface $request  [description]
+     * @param  ResponseInterface      $response [description]
+     * @param  [type]                 $args     [description]
+     * @return [type]                           [description]
+     */
+    public function adminScorePatch(ServerRequestInterface $request, ResponseInterface $response, $args)
+    {
+        extract($args);
+        $parsedBody = $request->getParsedBody();
+
+        $command = new UpdateScoreForGroupCommand(
+            $groupId,
+            $scoreId,
+            $parsedBody['homeTeamPrediction'],
+            $parsedBody['awayTeamPrediction']
+        );
+
+        $validator = $this->container->get('validationInflector')->getValidatorClass($command);
+        
+        if ($validator->assert($command)) {
+            $this->container->get('commandBus')->handle($command);
+            return $response;
+        }
+
+        return $this->respondWithValidationError($response, $validator->errors());
+    }
+
+    /**
+     * delete a score
+     * @param  ServerRequestInterface $request  [description]
+     * @param  ResponseInterface      $response [description]
+     * @param  [type]                 $args     [description]
+     * @return [type]                           [description]
+     */
+    public function adminScoreDelete(ServerRequestInterface $request, ResponseInterface $response, $args)
+    {
+        extract($args);
+        $parsedBody = $request->getParsedBody();
+        $command = new DeleteScoreCommand($groupId, $scoreId);
+        $this->container->get('commandBus')->handle($command);
+        return $response;;
     }
 
 }

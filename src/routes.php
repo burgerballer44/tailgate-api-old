@@ -71,16 +71,17 @@ return function (App $app) {
                 $group->get('', \TailgateApi\Controllers\GroupController::class . ':adminAll');
                 $group->get('/{groupId}', \TailgateApi\Controllers\GroupController::class . ':adminView');
                 $group->patch('/{groupId}', \TailgateApi\Controllers\GroupController::class . ':adminGroupPatch');
-                
-                $group->delete('/{groupId}', \TailgateApi\Controllers\GroupController::class . ':groupDelete');
-                $group->post('/{groupId}/member', \TailgateApi\Controllers\GroupController::class . ':memberPost');
-                $group->patch('/{groupId}/member/{memberId}', \TailgateApi\Controllers\GroupController::class . ':memberPatch');
-                $group->delete('/{groupId}/member/{memberId}', \TailgateApi\Controllers\GroupController::class . ':memberDelete');
-                $group->post('/{groupId}/member/{memberId}/player', \TailgateApi\Controllers\GroupController::class . ':playerPost');
-                $group->delete('/{groupId}/player/{playerId}', \TailgateApi\Controllers\GroupController::class . ':playerDelete');
-                $group->post('/{groupId}/player/{playerId}/score', \TailgateApi\Controllers\GroupController::class . ':scorePost');
-                $group->delete('/{groupId}/score/{scoreId}', \TailgateApi\Controllers\GroupController::class . ':scoreDelete');
-                $group->patch('/{groupId}/score/{scoreId}', \TailgateApi\Controllers\GroupController::class . ':scorePatch');
+                $group->delete('/{groupId}', \TailgateApi\Controllers\GroupController::class . ':adminGroupDelete');
+                $group->post('/{groupId}/member', \TailgateApi\Controllers\GroupController::class . ':adminMemberPost');
+                $group->post('/{groupId}/follow', \TailgateApi\Controllers\GroupController::class . ':adminFollowPost');
+                $group->delete('/{groupId}/follow/{followId}', \TailgateApi\Controllers\GroupController::class . ':adminFollowDelete');
+                $group->patch('/{groupId}/member/{memberId}', \TailgateApi\Controllers\GroupController::class . ':adminMemberPatch');
+                $group->delete('/{groupId}/member/{memberId}', \TailgateApi\Controllers\GroupController::class . ':adminMemberDelete');
+                $group->post('/{groupId}/member/{memberId}/player', \TailgateApi\Controllers\GroupController::class . ':adminPlayerPost');
+                $group->delete('/{groupId}/player/{playerId}', \TailgateApi\Controllers\GroupController::class . ':adminPlayerDelete');
+                $group->post('/{groupId}/player/{playerId}/score', \TailgateApi\Controllers\GroupController::class . ':adminScorePost');
+                $group->delete('/{groupId}/score/{scoreId}', \TailgateApi\Controllers\GroupController::class . ':adminScoreDelete');
+                $group->patch('/{groupId}/score/{scoreId}', \TailgateApi\Controllers\GroupController::class . ':adminScorePatch');
             });
 
             // teams
