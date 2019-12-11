@@ -33,7 +33,6 @@ class TailgatePDOStorage extends Pdo
         return $result && $this->passwordHashing->verify($client_secret, $result['client_secret']);
     }
 
-
     public function getUser($email)
     {
         $stmt = $this->db->prepare($sql = sprintf('SELECT * FROM %s WHERE email=:email', $this->config['user_table']));

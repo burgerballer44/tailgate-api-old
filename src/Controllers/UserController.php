@@ -271,6 +271,7 @@ class UserController extends ApiController
     public function delete(ServerRequestInterface $request, ResponseInterface $response, $args)
     {
         extract($args);
+        $user = $this->container->get('queryBus')->handle(new UserQuery($userId));
         $this->container->get('commandBus')->handle(new DeleteUserCommand($userId));
         return $response;
     }

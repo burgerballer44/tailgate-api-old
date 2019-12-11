@@ -75,9 +75,8 @@ class TeamController extends ApiController
     public function teamDelete(ServerRequestInterface $request, ResponseInterface $response, $args)
     {
         extract($args);
-
+        $team = $this->container->get('queryBus')->handle(new TeamQuery($teamId));
         $command = new DeleteTeamCommand($teamId);
-
         $this->container->get('commandBus')->handle($command);
         return $response;
     }

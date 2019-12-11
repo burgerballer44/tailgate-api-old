@@ -69,6 +69,7 @@ return function (App $app) {
             // groups
             $group->group('/groups', function (Group $group) {
                 $group->get('', \TailgateApi\Controllers\GroupController::class . ':adminAll');
+                $group->post('', \TailgateApi\Controllers\GroupController::class . ':adminCreatePost');
                 $group->get('/{groupId}', \TailgateApi\Controllers\GroupController::class . ':adminView');
                 $group->patch('/{groupId}', \TailgateApi\Controllers\GroupController::class . ':adminGroupPatch');
                 $group->delete('/{groupId}', \TailgateApi\Controllers\GroupController::class . ':adminGroupDelete');

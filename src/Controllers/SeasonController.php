@@ -114,6 +114,7 @@ class SeasonController extends ApiController
     public function seasonDelete(ServerRequestInterface $request, ResponseInterface $response, $args)
     {
         extract($args);
+        $season = $this->container->get('queryBus')->handle(new SeasonQuery($seasonId));
         $command = new DeleteSeasonCommand($seasonId);
         $this->container->get('commandBus')->handle($command);
         return $response;
@@ -188,6 +189,7 @@ class SeasonController extends ApiController
     public function gameDelete(ServerRequestInterface $request, ResponseInterface $response, $args)
     {
         extract($args);
+        $season = $this->container->get('queryBus')->handle(new SeasonQuery($seasonId));
         $command = new DeleteGameCommand($seasonId, $gameId);
         $this->container->get('commandBus')->handle($command);
         return $response;

@@ -27,7 +27,7 @@ use Tailgate\Application\Command\Group\UpdateScoreForGroupCommand;
 class GroupController extends ApiController
 {
     /**
-     * join a group by invite code
+     * authenticated user joins a group by invite code
      * @param  ServerRequestInterface $request  [description]
      * @param  ResponseInterface      $response [description]
      * @param  [type]                 $args     [description]
@@ -39,7 +39,6 @@ class GroupController extends ApiController
         $parsedBody = $request->getParsedBody();
         $inviteCode = $parsedBody['inviteCode'];
 
-        // get groupId by invite code
         $group = $this->container->get('queryBus')->handle(new GroupInviteCodeQuery($inviteCode));
         $groupId = $group['groupId'];
 
@@ -56,7 +55,7 @@ class GroupController extends ApiController
     }
 
     /**
-     * get all group that authenticated user belong to
+     * get all groups that authenticated user belong to
      * @param  ServerRequestInterface $request  [description]
      * @param  ResponseInterface      $response [description]
      * @param  [type]                 $args     [description]
@@ -78,9 +77,10 @@ class GroupController extends ApiController
      */
     public function createPost(ServerRequestInterface $request, ResponseInterface $response, $args)
     {
+        $userId = $request->getAttribute('userId');
         $parsedBody = $request->getParsedBody();
 
-        $command = new CreateGroupCommand($parsedBody['name'], $parsedBody['userId']);
+        $command = new CreateGroupCommand($parsedBody['name'], $userId);
 
         $validator = $this->container->get('validationInflector')->getValidatorClass($command);
         
@@ -118,8 +118,9 @@ class GroupController extends ApiController
     {
         $userId = $request->getAttribute('userId');
         extract($args);
-        $group = $this->container->get('queryBus')->handle(new GroupQuery($userId, $groupId));
+        $group = $this->container->get('queryBus')->handle(new GroupByUserQuery($userId, $groupId));
 
+        // user must be the group owner
         if ($userId != $group['ownerId']) {
             throw new \Exception("Hey! Invalid permissions!");
         }
@@ -143,6 +144,7 @@ class GroupController extends ApiController
         $group = $this->container->get('queryBus')->handle(new GroupByUserQuery($userId, $groupId));
         $member = collect($group['members'])->firstWhere('userId', $userId);
 
+        // user must be a group admin
         if ('Group-Admin' != $member['role']) {
             throw new \Exception("Hey! Invalid permissions!");
         }
@@ -163,10 +165,10 @@ class GroupController extends ApiController
     {
         $userId = $request->getAttribute('userId');
         extract($args);
-        $group = $this->container->get('queryBus')->handle(new GroupQuery($userId, $groupId));
+        $group = $this->container->get('queryBus')->handle(new GroupByUserQuery($userId, $groupId));
         $member = collect($group['members'])->firstWhere('userId', $userId);
 
-        // if the user is not an admin or the user changing themself
+        // user must be group admin or the user themself
         if ('Group-Admin' != $member['role'] && $member['memberId'] != $memberId) {
             throw new \Exception("Hey! Invalid permissions!");
         }
@@ -200,11 +202,11 @@ class GroupController extends ApiController
     {
         $userId = $request->getAttribute('userId');
         extract($args);
-        $group = $this->container->get('queryBus')->handle(new GroupQuery($userId, $groupId));
+        $group = $this->container->get('queryBus')->handle(new GroupByUserQuery($userId, $groupId));
         $member = collect($group['members'])->firstWhere('userId', $userId);
         $playerIds = collect($group['players'])->where('memberId', $member['memberId'])->pluck('playerId')->toArray();
 
-        // if the user is not an admin or the user changing themself
+        // user must be group admin or own the player id
         if ('Group-Admin' != $member['role'] && !in_array($playerId, $playerIds)) {
             throw new \Exception("Hey! Invalid permissions!");
         }
@@ -224,15 +226,13 @@ class GroupController extends ApiController
     public function followPost(ServerRequestInterface $request, ResponseInterface $response, $args)
     {   
         $userId = $request->getAttribute('userId');
-        $user = $request->getAttribute('user');
-
         extract($args);
         $parsedBody = $request->getParsedBody();
-        $group = $this->container->get('queryBus')->handle(new GroupQuery($userId, $groupId));
+        $group = $this->container->get('queryBus')->handle(new GroupByUserQuery($userId, $groupId));
         $member = collect($group['members'])->firstWhere('userId', $userId);
 
-        // if the user is not an admin
-        if ('Group-Admin' != $member['role'] && 'Admin' != $user['role']) {
+        // user must be group admin
+        if ('Group-Admin' != $member['role']) {
             throw new \Exception("Hey! Invalid permissions!");
         }
 
@@ -262,14 +262,13 @@ class GroupController extends ApiController
     public function followDelete(ServerRequestInterface $request, ResponseInterface $response, $args)
     {
         $userId = $request->getAttribute('userId');
-        $user = $request->getAttribute('user');
         extract($args);
         $parsedBody = $request->getParsedBody();
-        $group = $this->container->get('queryBus')->handle(new GroupQuery($userId, $groupId));
+        $group = $this->container->get('queryBus')->handle(new GroupByUserQuery($userId, $groupId));
         $member = collect($group['members'])->firstWhere('userId', $userId);
 
-        // if the user is not an admin
-        if ('Group-Admin' != $member['role'] && 'Admin' != $user['role']) {
+        // user must be group admin
+        if ('Group-Admin' != $member['role']) {
             throw new \Exception("Hey! Invalid permissions!");
         }
         
@@ -288,15 +287,14 @@ class GroupController extends ApiController
     public function scorePost(ServerRequestInterface $request, ResponseInterface $response, $args)
     {
         $userId = $request->getAttribute('userId');
-        $user = $request->getAttribute('user');
         extract($args);
         $parsedBody = $request->getParsedBody();
-        $group = $this->container->get('queryBus')->handle(new GroupQuery($userId, $groupId));
+        $group = $this->container->get('queryBus')->handle(new GroupByUserQuery($userId, $groupId));
         $member = collect($group['members'])->firstWhere('userId', $userId);
         $playersIds = collect($group['players'])->where('memberId', $member['memberId'])->pluck('playerId');
 
-        // must be admin, group admin, or thw owner of player
-        if ('Group-Admin' != $member['role'] && 'Admin' != $user['role'] && !$playersIds->contains($playerId)) {
+        // must be group admin, or the owner of player
+        if ('Group-Admin' != $member['role'] && !$playersIds->contains($playerId)) {
             throw new \Exception("Hey! Invalid permissions!");
         }
 
@@ -328,15 +326,14 @@ class GroupController extends ApiController
     public function scorePatch(ServerRequestInterface $request, ResponseInterface $response, $args)
     {
         $userId = $request->getAttribute('userId');
-        $user = $request->getAttribute('user');
         extract($args);
         $parsedBody = $request->getParsedBody();
-        $group = $this->container->get('queryBus')->handle(new GroupQuery($userId, $groupId));
+        $group = $this->container->get('queryBus')->handle(new GroupByUserQuery($userId, $groupId));
         $member = collect($group['members'])->firstWhere('userId', $userId);
         $scoreIds = collect($group['scores'])->where('memberId', $member['memberId'])->pluck('scoreId');
 
-        // must be admin, group admin, or thw owner of score
-        if ('Group-Admin' != $member['role'] && 'Admin' != $user['role'] && !$scoreIds->contains($scoreId)) {
+        // must be group admin, or the owner of score
+        if ('Group-Admin' != $member['role'] && !$scoreIds->contains($scoreId)) {
             throw new \Exception("Hey! Invalid permissions!");
         }
 
@@ -367,21 +364,20 @@ class GroupController extends ApiController
     public function scoreDelete(ServerRequestInterface $request, ResponseInterface $response, $args)
     {
         $userId = $request->getAttribute('userId');
-        $user = $request->getAttribute('user');
         extract($args);
         $parsedBody = $request->getParsedBody();
-        $group = $this->container->get('queryBus')->handle(new GroupQuery($userId, $groupId));
+        $group = $this->container->get('queryBus')->handle(new GroupByUserQuery($userId, $groupId));
         $member = collect($group['members'])->firstWhere('userId', $userId);
         $scoreIds = collect($group['scores'])->where('memberId', $member['memberId'])->pluck('scoreId');
 
-        // must be admin, group admin, or thw owner of score
-        if ('Group-Admin' != $member['role'] && 'Admin' != $user['role'] && !$scoreIds->contains($scoreId)) {
+        // must group admin, or the owner of score
+        if ('Group-Admin' != $member['role'] && !$scoreIds->contains($scoreId)) {
             throw new \Exception("Hey! Invalid permissions!");
         }
 
         $command = new DeleteScoreCommand($groupId, $scoreId);
         $this->container->get('commandBus')->handle($command);
-        return $response;;
+        return $response;
     }
 
 
@@ -400,6 +396,28 @@ class GroupController extends ApiController
 
 
 
+    /**
+     * create a group, assign user as owner, and member
+     * @param  ServerRequestInterface $request  [description]
+     * @param  ResponseInterface      $response [description]
+     * @param  [type]                 $args     [description]
+     * @return [type]                           [description]
+     */
+    public function adminCreatePost(ServerRequestInterface $request, ResponseInterface $response, $args)
+    {
+        $parsedBody = $request->getParsedBody();
+
+        $command = new CreateGroupCommand($parsedBody['name'], $parsedBody['userId']);
+
+        $validator = $this->container->get('validationInflector')->getValidatorClass($command);
+        
+        if ($validator->assert($command)) {
+            $this->container->get('commandBus')->handle($command);
+            return $response;
+        }
+
+        return $this->respondWithValidationError($response, $validator->errors());
+    }
 
     /**
      * query groups for admin
@@ -584,6 +602,7 @@ class GroupController extends ApiController
     public function adminMemberDelete(ServerRequestInterface $request, ResponseInterface $response, $args)
     {
         extract($args);
+        $group = $this->container->get('queryBus')->handle(new GroupQuery($groupId));
         $command = new DeleteMemberCommand($groupId, $memberId);
         $this->container->get('commandBus')->handle($command);
         return $response;
@@ -705,7 +724,7 @@ class GroupController extends ApiController
         $parsedBody = $request->getParsedBody();
         $command = new DeleteScoreCommand($groupId, $scoreId);
         $this->container->get('commandBus')->handle($command);
-        return $response;;
+        return $response;
     }
 
 }

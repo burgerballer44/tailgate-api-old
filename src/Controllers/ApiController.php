@@ -12,7 +12,6 @@ abstract class ApiController
 
     protected $statusCode = 200;
     protected $container;
-    protected $logger;
 
     /**
      * [__construct description]
@@ -20,7 +19,6 @@ abstract class ApiController
      */
     public function __construct(ContainerInterface $container) {
         $this->container = $container;
-        $this->logger = $this->container->get('logger');
     }
 
     /**
