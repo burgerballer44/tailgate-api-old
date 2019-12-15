@@ -30,6 +30,7 @@ class AddGameCommandValidator extends AbstractRespectValidator
         $this->rules['seasonId'] = V::notEmpty()->SeasonExist($this->seasonViewRepository)->setName('Season');
         $this->rules['homeTeamId'] = V::notEmpty()->TeamExist($this->teamViewRepository)->setName('Home Team');
         $this->rules['awayTeamId'] = V::notEmpty()->TeamExist($this->teamViewRepository)->setName('Away Team');
-        $this->rules['startDate'] = V::notEmpty()->date('Y-m-d H:i')->setName('Start Date');
+        $this->rules['startDate'] = V::notEmpty()->date('Y-m-d')->setName('Start Date');
+        $this->rules['startTime'] = V::oneOf(V::date('H:i'), V::notEmpty()->stringType()->length(2, 255))->setName('Start Date');
     }
 }

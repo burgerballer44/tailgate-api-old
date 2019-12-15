@@ -136,7 +136,8 @@ class SeasonController extends ApiController
             $seasonId,
             $parsedBody['homeTeamId'] ?? '',
             $parsedBody['awayTeamId'] ?? '',
-            $parsedBody['startDate'] ?? ''
+            $parsedBody['startDate'] ?? '',
+            $parsedBody['startTime'] ?? ''
         );
 
         $validator = $this->container->get('validationInflector')->getValidatorClass($command);
@@ -166,7 +167,8 @@ class SeasonController extends ApiController
             $gameId,
             $parsedBody['homeTeamScore'] ?? '',
             $parsedBody['awayTeamScore'] ?? '',
-            $parsedBody['startDate'] ?? ''
+            $parsedBody['startDate'] ?? '',
+            $parsedBody['startTime'] ?? ''
         );
 
         $validator = $this->container->get('validationInflector')->getValidatorClass($command);
