@@ -7,22 +7,21 @@ return function (App $app) {
 
     $container = $app->getContainer();
 
-    $app->post('/register', \TailgateApi\Controllers\UserController::class . ':registerPost');
-    $app->patch('/activate/{userId}', \TailgateApi\Controllers\UserController::class . ':activate');
-    $app->post('/request-reset', \TailgateApi\Controllers\UserController::class . ':requestReset');
-    $app->patch('/reset-password', \TailgateApi\Controllers\UserController::class . ':passwordPatch');
+    $app->post('/register', \TailgateApi\Actions\User\RegisterUserAction::class);
+    $app->patch('/activate/{userId}', \TailgateApi\Actions\User\ActivateUserAction::class);
+    $app->post('/request-reset', \TailgateApi\Actions\User\RequestResetAction::class);
+    $app->patch('/reset-password', \TailgateApi\Actions\User\ResetPasswordAction::class);
 
     // grant a token for a user trying to access the API
-    $app->post('/token', \TailgateApi\Controllers\AuthController::class . ':token');
+    $app->post('/token', \TailgateApi\Actions\Auth\TokenAction::class);
 
     // API
     $app->group('/v1', function (Group $group) {
 
         // user
         $group->group('/users', function (Group $group) {
-            $group->get('/me', \TailgateApi\Controllers\UserController::class . ':me');
-            $group->patch('/me', \TailgateApi\Controllers\UserController::class . ':mePatch');
-            $group->patch('/me/email', \TailgateApi\Controllers\UserController::class . ':emailPatch');
+            $group->get('/me', \TailgateApi\Actions\User\MeAction::class);
+            $group->patch('/me/email', \TailgateApi\Actions\User\UpdateEmailAction::class);
         });
 
         // groups
@@ -60,10 +59,10 @@ return function (App $app) {
 
             // users
             $group->group('/users', function (Group $group) {
-                $group->get('', \TailgateApi\Controllers\UserController::class . ':all');
-                $group->get('/{userId}', \TailgateApi\Controllers\UserController::class . ':view');
-                $group->patch('/{userId}', \TailgateApi\Controllers\UserController::class . ':userPatch');
-                $group->delete('/{userId}', \TailgateApi\Controllers\UserController::class . ':delete');
+                $group->get('', \TailgateApi\Actions\User\AllUsersAction::class);
+                $group->get('/{userId}', \TailgateApi\Actions\User\ViewUserAction::class);
+                $group->patch('/{userId}', \TailgateApi\Actions\User\UpdateUserAction::class);
+                $group->delete('/{userId}', \TailgateApi\Actions\User\DeleteUserAction::class);
             });
 
             // groups

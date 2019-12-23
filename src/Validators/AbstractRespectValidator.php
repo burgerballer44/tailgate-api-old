@@ -3,13 +3,14 @@
 namespace TailgateApi\Validators;
 
 use Respect\Validation\Exceptions\ExceptionInterface;
+use Tailgate\Application\Validator\ValidatorInterface;
 
 /**
  * We need a way to validate commands before they are run by their handlers.
  * Sure, we could have each handler have a validator dependency by I think it is better to fail earlier.
  * Implementations of this validator should be ran before the handler executes the command.
  */
-abstract class AbstractRespectValidator
+abstract class AbstractRespectValidator implements ValidatorInterface
 {
     /**
      * key value pairs
@@ -36,7 +37,7 @@ abstract class AbstractRespectValidator
      * @param  [type] $command [description]
      * @return [type]          [description]
      */
-    public function assert($command)
+    public function assert($command) : bool
     {
         $this->addRules($command);
 
@@ -49,19 +50,14 @@ abstract class AbstractRespectValidator
             }
         }
 
-        if (empty($this->errors())) {
-            return true;
-        }
-
-        return false;
-
+        return empty($this->errors());
     }
 
     /**
      * [errors description]
      * @return [type] [description]
      */
-    public function errors()
+    public function errors() : array
     {
         return $this->errors;
     }

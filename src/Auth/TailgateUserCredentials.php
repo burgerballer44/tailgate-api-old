@@ -13,19 +13,20 @@ class TailgateUserCredentials extends UserCredentials
 
     public function validateRequest(RequestInterface $request, ResponseInterface $response)
     {
-        if (!$request->request("password") || !$request->request("email")) {
-            $response->setError(400, 'invalid_request', 'Missing parameters: "email" and "password" required');
+        // assuming things have not changed... username is the email address
+        if (!$request->request("password") || !$request->request("username")) {
+            $response->setError(400, 'invalid_request', 'Missing parameters: "username" and "password" required');
 
             return null;
         }
 
-        if (!$this->storage->checkUserCredentials($request->request("email"), $request->request("password"))) {
+        if (!$this->storage->checkUserCredentials($request->request("username"), $request->request("password"))) {
             $response->setError(401, 'invalid_grant', 'Invalid email and password combination');
 
             return null;
         }
 
-        $userInfo = $this->storage->getUserDetails($request->request("email"));
+        $userInfo = $this->storage->getUserDetails($request->request("username"));
 
         if (empty($userInfo)) {
             $response->setError(400, 'invalid_grant', 'Unable to retrieve user information');

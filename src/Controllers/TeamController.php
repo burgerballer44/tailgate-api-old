@@ -37,6 +37,7 @@ class TeamController extends ApiController
     {
         extract($args);
         $team = $this->container->get('queryBus')->handle(new TeamQuery($teamId));
+        $team['eventLog'] = $this->container->get('viewRepository.eventLog')->allById($teamId);
         return $this->respondWithData($response, $team);
     }
 

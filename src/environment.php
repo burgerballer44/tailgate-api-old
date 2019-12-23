@@ -18,7 +18,7 @@ $dotenv->required([
     'DB_PASSWORD',
 ]);
 
-// set constants based on the environemnt we want
+// set constants based on the environment we want
 // should be 'dev' or 'prod'
 $mode = getenv('MODE');
 $devMode = true;

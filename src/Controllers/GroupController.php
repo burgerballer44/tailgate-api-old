@@ -443,6 +443,7 @@ class GroupController extends ApiController
     {
         extract($args);
         $group = $this->container->get('queryBus')->handle(new GroupQuery($groupId));
+        $group['eventLog'] = $this->container->get('viewRepository.eventLog')->allById($groupId);
         return $this->respondWithData($response, $group);
     }
 

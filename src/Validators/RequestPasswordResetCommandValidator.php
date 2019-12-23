@@ -3,7 +3,7 @@
 namespace TailgateApi\Validators;
 
 use Respect\Validation\Validator as V;
-use TailgateApi\Validators\User\EmailExist;
+use TailgateApi\Validators\User\UserExist;
 use Tailgate\Domain\Model\User\UserViewRepositoryInterface;
 
 class RequestPasswordResetCommandValidator extends AbstractRespectValidator
@@ -19,6 +19,6 @@ class RequestPasswordResetCommandValidator extends AbstractRespectValidator
     {
         V::with("TailgateApi\Validators\User\\");
         
-        $this->rules['userId'] = V::notEmpty()->email()->stringType()->EmailExist($this->userViewRepository)->setName('User');
+        $this->rules['userId'] = V::notEmpty()->stringType()->UserExist($this->userViewRepository)->setName('User');
     }
 }

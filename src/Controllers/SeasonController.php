@@ -41,6 +41,7 @@ class SeasonController extends ApiController
     {
         extract($args);
         $season = $this->container->get('queryBus')->handle(new SeasonQuery($seasonId));
+        $season['eventLog'] = $this->container->get('viewRepository.eventLog')->allById($seasonId);
         return $this->respondWithData($response, $season);
     }
 
