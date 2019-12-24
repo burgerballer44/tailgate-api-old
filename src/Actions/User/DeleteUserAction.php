@@ -4,7 +4,6 @@ namespace TailgateApi\Actions\User;
 
 use Psr\Http\Message\ResponseInterface;
 use TailgateApi\Actions\AbstractAction;
-use TailgateApi\Repository\EventViewRepository;
 use Tailgate\Application\Command\User\DeleteUserCommand;
 use Tailgate\Application\Query\User\UserQuery;
 use Tailgate\Domain\Service\User\DeleteUserHandler;
