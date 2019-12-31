@@ -1,39 +1,40 @@
 <?php
 
-use DI\Container;
-use Slim\Factory\AppFactory;
+use DI\ContainerBuilder;
+use Slim\App;
 
 require __DIR__ . '/../vendor/autoload.php';
 
 // set environment variables
 require __DIR__ . '/../src/environment.php';
 
-// instantiate PHP-DI Container
-$container = new Container();
+// instantiate PHP-DI ContainerBuilder
+$containerBuilder = new ContainerBuilder();
 
-// set the container we want to use and instantiate the app
-AppFactory::setContainer($container);
-$app = AppFactory::create();
+if (PROD_MODE) {
+    $containerBuilder->enableCompilation(__DIR__ . '/../var/cache/container');
+}
 
 // add settings to the app
 $settings = require __DIR__ . '/../src/settings.php';
-$settings($app);
+$settings($containerBuilder);
 
 // configure dependencies the application needs
-$dependencies = require __DIR__ . '/../src/dependencies.php';
-$dependencies($app);
+(require __DIR__ . '/../src/dependencies.php')($containerBuilder);
 
 // set up validation
-$validators = require __DIR__ . '/../src/validation.php';
-$validators($app);
+(require __DIR__ . '/../src/validation.php')($containerBuilder);
+// build PHP-DI Container instance
+$container = $containerBuilder->build();
+
+// create app instance
+$app = $container->get(App::class);
 
 // register middleware that every request needs
-$middleware = require __DIR__ . '/../src/middleware.php';
-$middleware($app);
+(require __DIR__ . '/../src/middleware.php')($app);
 
 // register routes the application uses
-$routes = require __DIR__ . '/../src/routes.php';
-$routes($app);
+(require __DIR__ . '/../src/routes.php')($app);
 
 // run app
 $app->run();

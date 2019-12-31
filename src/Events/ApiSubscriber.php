@@ -2,11 +2,12 @@
 
 namespace TailgateApi\Events;
 
-use Buttercup\Protects\DomainEvent;
-use Tailgate\Common\Event\EventSubscriberInterface;
 use PDO;
+use TailgateApi\Events\UserLoggedIn;
+use Tailgate\Common\Event\EventPublisherInterface;
+use Tailgate\Common\Event\EventSubscriberInterface;
 
-class DomainEventViewSubscriber implements EventSubscriberInterface
+class ApiSubscriber implements EventSubscriberInterface
 {
     private $pdo;
 
@@ -23,15 +24,15 @@ class DomainEventViewSubscriber implements EventSubscriberInterface
         );
 
         $stmt->execute([
-            ':aggregate_id' => (string) $event->getAggregateId(),
-            ':type' => get_class($event),
+            ':aggregate_id' => (string) $event->data->getAggregateId(),
+            ':type' => get_class($event->data),
             ':created_at' => (new \DateTimeImmutable())->format('Y-m-d H:i:s'),
-            ':data' => serialize($event)
+            ':data' => serialize($event->data)
         ]);
     }
 
-    public function isSubscribedTo($event)
+    public function subscribe(EventPublisherInterface $publisher)
     {
-        return $event instanceof DomainEvent;
+        $publisher->on(UserLoggedIn::class, [$this, 'handle']);
     }
 }

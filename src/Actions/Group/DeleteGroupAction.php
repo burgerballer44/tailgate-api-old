@@ -29,6 +29,6 @@ class DeleteGroupAction extends AbstractAction
         extract($this->args);
         $group = $this->groupQueryHandler->handle(new GroupQuery($groupId));
         $this->deleteGroupHandler->handle(new DeleteGroupCommand($groupId));
-        return $response;
+        return $this->respond();
     }
 }

@@ -30,7 +30,7 @@ class DeleteFollowByUserAction extends AbstractAction
         $group = $this->groupByUserQueryHandler->handle(new GroupByUserQuery($userId, $groupId));
         $member = collect($group['members'])->firstWhere('userId', $userId);
 
-        // user must be group admin or own the player id
+        // user must be group admin
         if ('Group-Admin' != $member['role']) {
             throw new \Exception("Hey! Invalid permissions!");
         }

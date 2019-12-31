@@ -36,6 +36,6 @@ class DeleteGroupByUserAction extends AbstractAction
         }
 
         $this->deleteGroupHandler->handle(new DeleteGroupCommand($groupId));
-        return $response;
+        return $this->respond();
     }
 }

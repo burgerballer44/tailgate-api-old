@@ -5,6 +5,8 @@ namespace TailgateApi\Auth;
 use OAuth2\GrantType\UserCredentials;
 use OAuth2\RequestInterface;
 use OAuth2\ResponseInterface;
+use TailgateApi\Events\UserLoggedIn;
+use Tailgate\Common\Event\EventPublisher;
 
 // extend oauth2 UserCredentials implementation since we need our implementations
 class TailgateUserCredentials extends UserCredentials
@@ -39,6 +41,9 @@ class TailgateUserCredentials extends UserCredentials
         }
 
         $this->userInfo = $userInfo;
+
+        $event = new UserLoggedIn($userInfo['user_id']);
+        EventPublisher::instance()->publish(get_class($event), $event);
 
         return true;
     }

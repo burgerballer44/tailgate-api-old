@@ -1,20 +1,22 @@
 <?php
 
+use DI\ContainerBuilder;
 use Monolog\Handler\StreamHandler;
 use Monolog\Logger;
 use Monolog\Processor\UidProcessor;
 use OAuth2\GrantType\ClientCredentials;
 use OAuth2\Server;
+use Psr\Container\ContainerInterface;
 use Psr\Http\Message\ResponseFactoryInterface;
 use Psr\Log\LoggerInterface;
 use Slim\App;
+use Slim\Factory\AppFactory;
 use TailgateApi\Auth\TailgatePDOStorage;
 use TailgateApi\Auth\TailgateUserCredentials;
-use TailgateApi\Events\DomainEventViewSubscriber;
-use TailgateApi\Events\LoggerDomainEventSubscriber;
 use TailgateApi\Middleware\ValidationExceptionMiddleware;
 use TailgateApi\Repository\EventViewRepository;
-use Tailgate\Common\Event\DomainEventPublisher;
+use Tailgate\Common\Event\EventPublisherInterface;
+use Tailgate\Common\Event\EventPublisher;
 use Tailgate\Common\PasswordHashing\BasicPasswordHashing;
 use Tailgate\Common\PasswordHashing\PasswordHashingInterface;
 use Tailgate\Common\Security\RandomStringInterface;
@@ -55,12 +57,7 @@ use Tailgate\Domain\Service\DataTransformer\TeamViewArrayDataTransformer;
 use Tailgate\Domain\Service\DataTransformer\UserDataTransformerInterface;
 use Tailgate\Domain\Service\DataTransformer\UserViewArrayDataTransformer;
 use Tailgate\Infrastructure\Persistence\Event\EventStoreInterface;
-use Tailgate\Infrastructure\Persistence\Event\GroupProjectorEventSubscriber;
 use Tailgate\Infrastructure\Persistence\Event\PDO\EventStore;
-use Tailgate\Infrastructure\Persistence\Event\PersistDomainEventSubscriber;
-use Tailgate\Infrastructure\Persistence\Event\SeasonProjectorEventSubscriber;
-use Tailgate\Infrastructure\Persistence\Event\TeamProjectorEventSubscriber;
-use Tailgate\Infrastructure\Persistence\Event\UserProjectorEventSubscriber;
 use Tailgate\Infrastructure\Persistence\Projection\PDO\GroupProjection;
 use Tailgate\Infrastructure\Persistence\Projection\PDO\SeasonProjection;
 use Tailgate\Infrastructure\Persistence\Projection\PDO\TeamProjection;
@@ -79,227 +76,208 @@ use Tailgate\Infrastructure\Persistence\ViewRepository\PDO\SeasonViewRepository;
 use Tailgate\Infrastructure\Persistence\ViewRepository\PDO\TeamViewRepository;
 use Tailgate\Infrastructure\Persistence\ViewRepository\PDO\UserViewRepository;
 
-return function (App $app) {
+return function (ContainerBuilder $containerBuilder) {
 
-    $container = $app->getContainer();
+    $containerBuilder->addDefinitions([
 
-    // response factory
-    $container->set(ResponseFactoryInterface::class, function () use ($app) {
-        return $app->getResponseFactory();
-    });
+        // slim app
+        App::class => function (ContainerInterface $container) {
+            AppFactory::setContainer($container);
+            $app = AppFactory::create();
+            return $app;
+        },
 
-    // pdo connection
-    $connection = $container->get('settings')['pdo']['connection'];
-    $host = $container->get('settings')['pdo']['host'];
-    $port = $container->get('settings')['pdo']['port'];
-    $database = $container->get('settings')['pdo']['database'];
-    $username = $container->get('settings')['pdo']['username'];
-    $password = $container->get('settings')['pdo']['password'];
+        // response factory
+        ResponseFactoryInterface::class => function (ContainerInterface $container) {
+            return $container->get(App::class)->getResponseFactory();
+        },
 
-    $container->set(PDO::class, function ($container) use ($connection, $host, $port, $database, $username, $password)
-    {
-        return new PDO("{$connection}:host={$host};port={$port};dbname={$database};charset=utf8mb4", $username, $password, [
-            PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION
-        ]);
-    });
+        // pdo connection
+        PDO::class => function (ContainerInterface $container) {
+            $settings   = $container->get('settings')['pdo'];
+            $connection = $settings['connection'];
+            $host       = $settings['host'];
+            $port       = $settings['port'];
+            $database   = $settings['database'];
+            $username   = $settings['username'];
+            $password   = $settings['password'];
 
-    // logger
-    $container->set(LoggerInterface::class, function ($container) {
-        $settings = $container->get('settings');
+            return new PDO("{$connection}:host={$host};port={$port};dbname={$database};charset=utf8mb4", $username, $password, [
+                PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION
+            ]);
+        },
 
-        $loggerSettings = $settings['logger'];
-        $logger = new Logger($loggerSettings['name']);
+        // logger
+        LoggerInterface::class => function (ContainerInterface $container) {
+            $settings = $container->get('settings')['logger'];
+            $logger = new Logger($settings['name']);
+            $processor = new UidProcessor();
+            $logger->pushProcessor($processor);
+            $handler = new StreamHandler($settings['path'], $settings['level']);
+            $logger->pushHandler($handler);
+            return $logger;
+        },
 
-        $processor = new UidProcessor();
-        $logger->pushProcessor($processor);
+        // event store
+        EventStoreInterface::class => function (ContainerInterface $container) {
+            return new EventStore($container->get(PDO::class));
+        },
 
-        $handler = new StreamHandler($loggerSettings['path'], $loggerSettings['level']);
-        $logger->pushHandler($handler);
+        // projections
+        UserProjectionInterface::class => function (ContainerInterface $container) {
+            return new UserProjection($container->get(PDO::class));
+        },
+        GroupProjectionInterface::class => function (ContainerInterface $container) {
+            return new GroupProjection($container->get(PDO::class));
+        },
+        TeamProjectionInterface::class => function (ContainerInterface $container) {
+            return new TeamProjection($container->get(PDO::class));
+        },
+        SeasonProjectionInterface::class => function (ContainerInterface $container) {
+            return new SeasonProjection($container->get(PDO::class));
+        },
 
-        return $logger;
-    });
+        // event publisher
+        EventPublisherInterface::class => function (ContainerInterface $container) {
+            return EventPublisher::instance();
+        },
 
-    // event store
-    $container->set(EventStoreInterface::class, function ($container) {
-        return new EventStore($container->get(PDO::class));
-    });
+        // write repositories
+        UserRepositoryInterface::class => function (ContainerInterface $container) {
+            return new UserRepository(
+                $container->get(EventStoreInterface::class),
+                $container->get(EventPublisherInterface::class)
+            );
+        },
+        GroupRepositoryInterface::class => function (ContainerInterface $container) {
+            return new GroupRepository(
+                $container->get(EventStoreInterface::class),
+                $container->get(EventPublisherInterface::class)
+            );
+        },
+        TeamRepositoryInterface::class => function (ContainerInterface $container) {
+            return new TeamRepository(
+                $container->get(EventStoreInterface::class),
+                $container->get(EventPublisherInterface::class)
+            );
+        },
+        SeasonRepositoryInterface::class => function (ContainerInterface $container) {
+            return new SeasonRepository(
+                $container->get(EventStoreInterface::class),
+                $container->get(EventPublisherInterface::class)
+            );
+        },
 
-    // projections
-    $container->set(UserProjectionInterface::class, function ($container) {
-        return new UserProjection($container->get(PDO::class));
-    });
-    $container->set(GroupProjectionInterface::class, function ($container) {
-        return new GroupProjection($container->get(PDO::class));
-    });
-    $container->set(TeamProjectionInterface::class, function ($container) {
-        return new TeamProjection($container->get(PDO::class));
-    });
-    $container->set(SeasonProjectionInterface::class, function ($container) {
-        return new SeasonProjection($container->get(PDO::class));
-    });
+        // read repositories
+        UserViewRepositoryInterface::class => function (ContainerInterface $container) {
+            return new UserViewRepository($container->get(PDO::class));
+        },
+        GroupViewRepositoryInterface::class => function (ContainerInterface $container) {
+            return new GroupViewRepository($container->get(PDO::class));
+        },
+        MemberViewRepositoryInterface::class => function (ContainerInterface $container) {
+            return new MemberViewRepository($container->get(PDO::class));
+        },
+        PlayerViewRepositoryInterface::class => function (ContainerInterface $container) {
+            return new PlayerViewRepository($container->get(PDO::class));
+        },
+        ScoreViewRepositoryInterface::class => function (ContainerInterface $container) {
+            return new ScoreViewRepository($container->get(PDO::class));
+        },
+        TeamViewRepositoryInterface::class => function (ContainerInterface $container) {
+            return new TeamViewRepository($container->get(PDO::class));
+        },
+        FollowViewRepositoryInterface::class => function (ContainerInterface $container) {
+            return new FollowViewRepository($container->get(PDO::class));
+        },
+        SeasonViewRepositoryInterface::class => function (ContainerInterface $container) {
+            return new SeasonViewRepository($container->get(PDO::class));
+        },
+        GameViewRepositoryInterface::class => function (ContainerInterface $container) {
+            return new GameViewRepository($container->get(PDO::class));
+        },
+        EventViewRepository::class => function (ContainerInterface $container) {
+            return new EventViewRepository($container->get(PDO::class));
+        },
 
-    // event publisher
-    DomainEventPublisher::instance()->subscribe(
-        new UserProjectorEventSubscriber($container->get(UserProjectionInterface::class))
-    );
-    DomainEventPublisher::instance()->subscribe(
-        new GroupProjectorEventSubscriber($container->get(GroupProjectionInterface::class))
-    );
-    DomainEventPublisher::instance()->subscribe(
-        new TeamProjectorEventSubscriber($container->get(TeamProjectionInterface::class))
-    );
-    DomainEventPublisher::instance()->subscribe(
-        new SeasonProjectorEventSubscriber($container->get(SeasonProjectionInterface::class))
-    );
-    DomainEventPublisher::instance()->subscribe(
-        new PersistDomainEventSubscriber($container->get(EventStoreInterface::class))
-    );
-    DomainEventPublisher::instance()->subscribe(
-        new LoggerDomainEventSubscriber($container->get(LoggerInterface::class))
-    );
-    DomainEventPublisher::instance()->subscribe(
-        new DomainEventViewSubscriber($container->get(PDO::class))
-    );
-    $container->set(DomainEventPublisher::class, function ($container) {
-        return DomainEventPublisher::instance();
-    });
+        // transformers
+        UserDataTransformerInterface::class => function (ContainerInterface $container) {
+            return new UserViewArrayDataTransformer();
+        },
+        MemberDataTransformerInterface::class => function (ContainerInterface $container) {
+            return new MemberViewArrayDataTransformer();
+        },
+        PlayerDataTransformerInterface::class => function (ContainerInterface $container) {
+            return new PlayerViewArrayDataTransformer();
+        },
+        ScoreDataTransformerInterface::class => function (ContainerInterface $container) {
+            return new ScoreViewArrayDataTransformer();
+        },
+        FollowDataTransformerInterface::class => function (ContainerInterface $container) {
+            return new FollowViewArrayDataTransformer();
+        },
+        GameDataTransformerInterface::class => function (ContainerInterface $container) {
+            return new GameViewArrayDataTransformer();
+        },
+        GroupDataTransformerInterface::class => function (ContainerInterface $container) {
+            return new GroupViewArrayDataTransformer(
+                $container->get(MemberDataTransformerInterface::class),
+                $container->get(PlayerDataTransformerInterface::class),
+                $container->get(ScoreDataTransformerInterface::class),
+                $container->get(FollowDataTransformerInterface::class)
+            );
+        },
+        SeasonDataTransformerInterface::class => function (ContainerInterface $container) {
+            return new SeasonViewArrayDataTransformer(
+                $container->get(GameDataTransformerInterface::class),
+            );
+        },
+        TeamDataTransformerInterface::class => function (ContainerInterface $container) {
+            return new TeamViewArrayDataTransformer(
+                $container->get(FollowDataTransformerInterface::class),
+                $container->get(GameDataTransformerInterface::class),
+            );
+        },
 
-    // repositories
-    $container->set(UserRepositoryInterface::class, function ($container) {
-        return new UserRepository(
-            $container->get(EventStoreInterface::class),
-            $container->get(DomainEventPublisher::class)
-        );
-    });
-    $container->set(GroupRepositoryInterface::class, function ($container) {
-        return new GroupRepository(
-            $container->get(EventStoreInterface::class),
-            $container->get(DomainEventPublisher::class)
-        );
-    });
-    $container->set(TeamRepositoryInterface::class, function ($container) {
-        return new TeamRepository(
-            $container->get(EventStoreInterface::class),
-            $container->get(DomainEventPublisher::class)
-        );
-    });
-    $container->set(SeasonRepositoryInterface::class, function ($container) {
-        return new SeasonRepository(
-            $container->get(EventStoreInterface::class),
-            $container->get(DomainEventPublisher::class)
-        );
-    });
+        // password hashing
+        PasswordHashingInterface::class => function (ContainerInterface $container) {
+            return new BasicPasswordHashing();
+        },
 
-    // view repositories
-    $container->set(UserViewRepositoryInterface::class, function ($container) {
-        return new UserViewRepository($container->get(PDO::class));
-    });
-    $container->set(GroupViewRepositoryInterface::class, function ($container) {
-        return new GroupViewRepository($container->get(PDO::class));
-    });
-    $container->set(MemberViewRepositoryInterface::class, function ($container) {
-        return new MemberViewRepository($container->get(PDO::class));
-    });
-    $container->set(PlayerViewRepositoryInterface::class, function ($container) {
-        return new PlayerViewRepository($container->get(PDO::class));
-    });
-    $container->set(ScoreViewRepositoryInterface::class, function ($container) {
-        return new ScoreViewRepository($container->get(PDO::class));
-    });
-    $container->set(TeamViewRepositoryInterface::class, function ($container) {
-        return new TeamViewRepository($container->get(PDO::class));
-    });
-    $container->set(FollowViewRepositoryInterface::class, function ($container) {
-        return new FollowViewRepository($container->get(PDO::class));
-    });
-    $container->set(SeasonViewRepositoryInterface::class, function ($container) {
-        return new SeasonViewRepository($container->get(PDO::class));
-    });
-    $container->set(GameViewRepositoryInterface::class, function ($container) {
-        return new GameViewRepository($container->get(PDO::class));
-    });
-    $container->set(EventViewRepository::class, function ($container) {
-        return new EventViewRepository($container->get(PDO::class));
-    });
+        // semi random string generation
+        RandomStringInterface::class => function (ContainerInterface $container) {
+            return new StringShuffler;
+        },
 
-    // transformers
-    $container->set(UserDataTransformerInterface::class, function ($container) {
-        return new UserViewArrayDataTransformer();
-    });
-    $container->set(MemberDataTransformerInterface::class, function ($container) {
-        return new MemberViewArrayDataTransformer();
-    });
-    $container->set(PlayerDataTransformerInterface::class, function ($container) {
-        return new PlayerViewArrayDataTransformer();
-    });
-    $container->set(ScoreDataTransformerInterface::class, function ($container) {
-        return new ScoreViewArrayDataTransformer();
-    });
-    $container->set(FollowDataTransformerInterface::class, function ($container) {
-        return new FollowViewArrayDataTransformer();
-    });
-    $container->set(GameDataTransformerInterface::class, function ($container) {
-        return new GameViewArrayDataTransformer();
-    });
-    $container->set(GroupDataTransformerInterface::class, function ($container) {
-        return new GroupViewArrayDataTransformer(
-            $container->get(MemberDataTransformerInterface::class),
-            $container->get(PlayerDataTransformerInterface::class),
-            $container->get(ScoreDataTransformerInterface::class),
-            $container->get(FollowDataTransformerInterface::class)
-        );
-    });
-    $container->set(SeasonDataTransformerInterface::class, function ($container) {
-        return new SeasonViewArrayDataTransformer(
-            $container->get(GameDataTransformerInterface::class),
-        );
-    });
-    $container->set(TeamDataTransformerInterface::class, function ($container) {
-        return new TeamViewArrayDataTransformer(
-            $container->get(FollowDataTransformerInterface::class),
-            $container->get(GameDataTransformerInterface::class),
-        );
-    });
+        // Oauth Server
+        Server::class => function (ContainerInterface $container) {
 
-    // password hashing
-    $container->set(PasswordHashingInterface::class, function ($container) {
-        return new BasicPasswordHashing();
-    });
+            $storage = new TailgatePDOStorage(
+                $container->get(PDO::class),
+                $container->get(PasswordHashingInterface::class),
+                ['user_table' => 'user']
+            );
 
-    // semi random string generation
-    $container->set(RandomStringInterface::class, function ($container) {
-        return new StringShuffler;
-    });
+            $server = new Server($storage,[
+                'access_lifetime' => $container->get('settings')['access_lifetime']
+            ]);
 
-    // Oauth Server
-    $container->set(Server::class, function ($container) {
+            // Add the "Client Credentials" grant type (cron type work)
+            $server->addGrantType(new ClientCredentials($storage));
 
-        $storage = new TailgatePDOStorage(
-            $container->get(PDO::class),
-            $container->get(PasswordHashingInterface::class),
-            ['user_table' => 'user']
-        );
+            // Add the "User Credentials" grant type (1st party apps)
+            $server->addGrantType(new TailgateUserCredentials($storage));
 
-        $server = new Server($storage,[
-            'access_lifetime' => $container->get('settings')['access_lifetime']
-        ]);
+            return $server;
+        },
 
-        // Add the "Client Credentials" grant type (cron type work)
-        $server->addGrantType(new ClientCredentials($storage));
+        // middleware
+        GuardMiddleware::class => function (ContainerInterface $container) {
+            return new GuardMiddleware($container->get(Server::class));
+        },
 
-        // Add the "User Credentials" grant type (1st party apps)
-        $server->addGrantType(new TailgateUserCredentials($storage));
-
-        return $server;
-    });
-
-    // middleware
-    $container->set(GuardMiddleware::class, function ($container) {
-        return new GuardMiddleware($container->get(Server::class));
-    });
-
-    $container->set(ValidationExceptionMiddleware::class, function ($container) {
-        return new ValidationExceptionMiddleware($container->get(ResponseFactoryInterface::class));
-    });
-
+        ValidationExceptionMiddleware::class => function (ContainerInterface $container) {
+            return new ValidationExceptionMiddleware($container->get(ResponseFactoryInterface::class));
+        },
+    ]);
 };
