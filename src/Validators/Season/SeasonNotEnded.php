@@ -32,7 +32,7 @@ class SeasonNotEnded extends AbstractRule
         if ($seasonView) {
             $today = (new \DateTime('today'))->format('Y-m-d');
             $seasonEnd = \DateTimeImmutable::createFromFormat("Y-m-d", $seasonView->getSeasonEnd())->format("Y-m-d");
-            return $seasonEnd < $today;
+            return $today < $seasonEnd;
         }
 
         return false;

@@ -121,7 +121,11 @@ return function (ContainerBuilder $containerBuilder) {
             );
         },
         UpdateScoreForGroupCommandValidator::class => function (ContainerInterface $container) {
-            return new UpdateScoreForGroupCommandValidator($container->get(GroupViewRepositoryInterface::class), $container->get(ScoreViewRepositoryInterface::class));
+            return new UpdateScoreForGroupCommandValidator(
+                $container->get(GroupViewRepositoryInterface::class),
+                $container->get(ScoreViewRepositoryInterface::class),
+                $container->get(GameViewRepositoryInterface::class)
+            );
         },
         AddPlayerToGroupCommandValidator::class => function (ContainerInterface $container) {
             return new AddPlayerToGroupCommandValidator(

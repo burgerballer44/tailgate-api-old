@@ -3,23 +3,28 @@
 namespace TailgateApi\Validators;
 
 use Respect\Validation\Validator as V;
-use Tailgate\Domain\Model\Group\Group;
+use TailgateApi\Validators\Group\GameTimeNotPassedForUpdate;
 use TailgateApi\Validators\Group\GroupExist;
-use Tailgate\Domain\Model\Group\GroupViewRepositoryInterface;
 use TailgateApi\Validators\Group\ScoreExist;
+use Tailgate\Domain\Model\Group\Group;
+use Tailgate\Domain\Model\Group\GroupViewRepositoryInterface;
 use Tailgate\Domain\Model\Group\ScoreViewRepositoryInterface;
+use Tailgate\Domain\Model\Season\GameViewRepositoryInterface;
 
 class UpdateScoreForGroupCommandValidator extends AbstractRespectValidator
 {
     private $groupViewRepository;
     private $scoreViewRepository;
+    private $gameViewRepository;
 
     public function __construct(
         GroupViewRepositoryInterface $groupViewRepository,
-        ScoreViewRepositoryInterface $scoreViewRepository
+        ScoreViewRepositoryInterface $scoreViewRepository,
+        GameViewRepositoryInterface $gameViewRepository
     ) {
         $this->groupViewRepository = $groupViewRepository;
         $this->scoreViewRepository = $scoreViewRepository;
+        $this->gameViewRepository = $gameViewRepository;
     }
 
     protected function addRules($command)
@@ -27,7 +32,7 @@ class UpdateScoreForGroupCommandValidator extends AbstractRespectValidator
         V::with("TailgateApi\Validators\Group\\");
 
         $this->rules['groupId'] = V::notEmpty()->GroupExist($this->groupViewRepository)->setName('Group');
-        $this->rules['scoreId'] = V::notEmpty()->ScoreExist($this->scoreViewRepository)->setName('Score');
+        $this->rules['scoreId'] = V::notEmpty()->ScoreExist($this->scoreViewRepository)->GameTimeNotPassedForUpdate($this->scoreViewRepository, $this->gameViewRepository)->setName('Score');
         $this->rules['homeTeamPrediction'] = V::notEmpty()->intVal()->min(0)->setName('Home Team Prediction');
         $this->rules['awayTeamPrediction'] = V::notEmpty()->intVal()->min(0)->setName('Away Team Prediction');
     }
