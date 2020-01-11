@@ -33,7 +33,7 @@ class UpdateScoreForGroupCommandValidator extends AbstractRespectValidator
 
         $this->rules['groupId'] = V::notEmpty()->GroupExist($this->groupViewRepository)->setName('Group');
         $this->rules['scoreId'] = V::notEmpty()->ScoreExist($this->scoreViewRepository)->GameTimeNotPassedForUpdate($this->scoreViewRepository, $this->gameViewRepository)->setName('Score');
-        $this->rules['homeTeamPrediction'] = V::notEmpty()->intVal()->min(0)->setName('Home Team Prediction');
-        $this->rules['awayTeamPrediction'] = V::notEmpty()->intVal()->min(0)->setName('Away Team Prediction');
+        $this->rules['homeTeamPrediction'] = V::numeric()->intVal()->min(0)->setName('Home Team Prediction');
+        $this->rules['awayTeamPrediction'] = V::numeric()->intVal()->min(0)->setName('Away Team Prediction');
     }
 }

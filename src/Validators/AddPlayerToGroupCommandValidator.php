@@ -32,6 +32,6 @@ class AddPlayerToGroupCommandValidator extends AbstractRespectValidator
 
         $this->rules['groupId'] = V::notEmpty()->stringType()->GroupExist($this->groupViewRepository)->setName('Group');
         $this->rules['memberId'] = V::notEmpty()->stringType()->MemberExist($this->memberViewRepository)->setName('Member');
-        $this->rules['username'] = V::notEmpty()->stringType()->UniqueUsernamePerGroup($this->playerViewRepository, $command->getGroupId())->noWhitespace()->alnum()->length(4, 20)->setName('Username');
+        $this->rules['username'] = V::notEmpty()->stringType()->UniqueUsernamePerGroup($this->playerViewRepository, $command->getGroupId())->noWhitespace()->alnum()->length(2, 20)->setName('Username');
     }
 }

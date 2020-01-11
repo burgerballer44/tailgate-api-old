@@ -3,7 +3,7 @@
     "prefer-stable": true,
     "require": {
         "slim/slim": "^4.0.0",
-        "slim/psr7": "^0.3.0",
+        "slim/psr7": "^1.0",
         "php-di/php-di": "^6.0",
         "burger/tailgate": "dev-master",
         "respect/validation": "^1.1",

@@ -13,10 +13,13 @@ use Slim\App;
 use Slim\Factory\AppFactory;
 use TailgateApi\Auth\TailgatePDOStorage;
 use TailgateApi\Auth\TailgateUserCredentials;
+use TailgateApi\Middleware\TransactionMiddleware;
 use TailgateApi\Middleware\ValidationExceptionMiddleware;
 use TailgateApi\Repository\EventViewRepository;
-use Tailgate\Common\Event\EventPublisherInterface;
+use TailgateApi\Transactions\PdoTransaction;
+use TailgateApi\Transactions\TransactionHandlerInterface;
 use Tailgate\Common\Event\EventPublisher;
+use Tailgate\Common\Event\EventPublisherInterface;
 use Tailgate\Common\PasswordHashing\BasicPasswordHashing;
 use Tailgate\Common\PasswordHashing\PasswordHashingInterface;
 use Tailgate\Common\Security\RandomStringInterface;
@@ -249,6 +252,11 @@ return function (ContainerBuilder $containerBuilder) {
             return new StringShuffler;
         },
 
+        // transactions
+        TransactionHandlerInterface::class => function (ContainerInterface $container) {
+            return new PdoTransaction($container->get(PDO::class));
+        },
+
         // Oauth Server
         Server::class => function (ContainerInterface $container) {
 
@@ -278,6 +286,10 @@ return function (ContainerBuilder $containerBuilder) {
 
         ValidationExceptionMiddleware::class => function (ContainerInterface $container) {
             return new ValidationExceptionMiddleware($container->get(ResponseFactoryInterface::class));
+        },
+
+        TransactionMiddleware::class => function (ContainerInterface $container) {
+            return new TransactionMiddleware($container->get(TransactionHandlerInterface::class));
         },
     ]);
 };

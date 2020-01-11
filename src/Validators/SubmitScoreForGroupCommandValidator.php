@@ -39,7 +39,7 @@ class SubmitScoreForGroupCommandValidator extends AbstractRespectValidator
         $this->rules['groupId'] = V::notEmpty()->GroupExist($this->groupViewRepository)->setName('Group');
         $this->rules['playerId'] = V::notEmpty()->PlayerExist($this->playerViewRepository)->setName('Player');
         $this->rules['gameId'] = V::notEmpty()->GameExistsInSeasonGroupFollows($this->gameViewRepository, $this->followViewRepository, $command->getGroupId())->GameTimeNotPassed($this->gameViewRepository)->setName('Game');
-        $this->rules['homeTeamPrediction'] = V::notEmpty()->intVal()->min(0)->setName('Home Team Prediction');
-        $this->rules['awayTeamPrediction'] = V::notEmpty()->intVal()->min(0)->setName('Away Team Prediction');
+        $this->rules['homeTeamPrediction'] = V::numeric()->intVal()->min(0)->setName('Home Team Prediction');
+        $this->rules['awayTeamPrediction'] = V::numeric()->intVal()->min(0)->setName('Away Team Prediction');
     }
 }

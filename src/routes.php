@@ -2,6 +2,9 @@
 
 use Slim\App;
 use Slim\Routing\RouteCollectorProxy as Group;
+use TailgateApi\Middleware\AdminMiddleware;
+use TailgateApi\Middleware\GuardMiddleware;
+use TailgateApi\Middleware\TransactionMiddleware;
 
 return function (App $app) {
 
@@ -21,7 +24,7 @@ return function (App $app) {
         // user
         $group->group('/users', function (Group $group) {
             $group->get('/me', \TailgateApi\Actions\User\MeAction::class);
-            $group->patch('/me/email', \TailgateApi\Actions\User\UpdateEmailAction::class);
+            $group->patch('/me/email', \TailgateApi\Actions\User\UpdateEmailAction::class)->add(TransactionMiddleware::class);
         });
 
         // groups
@@ -40,7 +43,7 @@ return function (App $app) {
             $group->post('/{groupId}/player/{playerId}/score', \TailgateApi\Actions\Group\SubmitScoreByUserAction::class);
             $group->patch('/{groupId}/score/{scoreId}', \TailgateApi\Actions\Group\UpdateScoreByUserAction::class);
             $group->delete('/{groupId}/score/{scoreId}', \TailgateApi\Actions\Group\DeleteScoreByUserAction::class);
-        });
+        })->add(TransactionMiddleware::class);
 
         // teams
         $group->group('/teams', function (Group $group) {
@@ -61,8 +64,8 @@ return function (App $app) {
             $group->group('/users', function (Group $group) {
                 $group->get('', \TailgateApi\Actions\User\AllUsersAction::class);
                 $group->get('/{userId}', \TailgateApi\Actions\User\ViewUserAction::class);
-                $group->patch('/{userId}', \TailgateApi\Actions\User\UpdateUserAction::class);
-                $group->delete('/{userId}', \TailgateApi\Actions\User\DeleteUserAction::class);
+                $group->patch('/{userId}', \TailgateApi\Actions\User\UpdateUserAction::class)->add(TransactionMiddleware::class);
+                $group->delete('/{userId}', \TailgateApi\Actions\User\DeleteUserAction::class)->add(TransactionMiddleware::class);
             });
 
             // groups
@@ -82,14 +85,14 @@ return function (App $app) {
                 $group->post('/{groupId}/player/{playerId}/score', \TailgateApi\Actions\Group\SubmitScoreAction::class);
                 $group->patch('/{groupId}/score/{scoreId}', \TailgateApi\Actions\Group\UpdateScoreAction::class);
                 $group->delete('/{groupId}/score/{scoreId}', \TailgateApi\Actions\Group\DeleteScoreAction::class);
-            });
+            })->add(TransactionMiddleware::class);
 
             // teams
             $group->group('/teams', function (Group $group) {
                 $group->post('', \TailgateApi\Actions\Team\AddTeamAction::class);
                 $group->patch('/{teamId}', \TailgateApi\Actions\Team\UpdateTeamAction::class);
                 $group->delete('/{teamId}', \TailgateApi\Actions\Team\DeleteTeamAction::class);
-            });
+            })->add(TransactionMiddleware::class);
 
             // seasons
             $group->group('/seasons', function (Group $group) {
@@ -99,10 +102,10 @@ return function (App $app) {
                 $group->post('/{seasonId}/game', \TailgateApi\Actions\Season\AddGameAction::class);
                 $group->patch('/{seasonId}/game/{gameId}/score', \TailgateApi\Actions\Season\UpdateGameScoreAction::class);
                 $group->delete('/{seasonId}/game/{gameId}', \TailgateApi\Actions\Season\DeleteGameAction::class);
-            });
+            })->add(TransactionMiddleware::class);
 
-        })->add(\TailgateApi\Middleware\AdminMiddleware::class);
+        })->add(AdminMiddleware::class);
 
-    })->add(\TailgateApi\Middleware\GuardMiddleware::class);
+    })->add(GuardMiddleware::class);
 
 };
