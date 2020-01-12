@@ -8,6 +8,7 @@ use TailgateApi\Validators\AddGameCommandValidator;
 use TailgateApi\Validators\AddMemberToGroupCommandValidator;
 use TailgateApi\Validators\AddPlayerToGroupCommandValidator;
 use TailgateApi\Validators\AddTeamCommandValidator;
+use TailgateApi\Validators\ChangePlayerOwnerCommandValidator;
 use TailgateApi\Validators\CreateGroupCommandValidator;
 use TailgateApi\Validators\CreateSeasonCommandValidator;
 use TailgateApi\Validators\FollowTeamCommandValidator;
@@ -97,6 +98,13 @@ return function (ContainerBuilder $containerBuilder) {
             return new UpdateGroupCommandValidator(
                 $container->get(GroupViewRepositoryInterface::class),
                 $container->get(UserViewRepositoryInterface::class)
+            );
+        },
+        ChangePlayerOwnerCommandValidator::class => function (ContainerInterface $container) {
+            return new ChangePlayerOwnerCommandValidator(
+                $container->get(GroupViewRepositoryInterface::class),
+                $container->get(PlayerViewRepositoryInterface::class),
+                $container->get(MemberViewRepositoryInterface::class)
             );
         },
         AddMemberToGroupCommandValidator::class => function (ContainerInterface $container) {

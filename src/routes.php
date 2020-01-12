@@ -37,6 +37,7 @@ return function (App $app) {
             $group->patch('/{groupId}/member/{memberId}', \TailgateApi\Actions\Group\UpdateMemberByUserAction::class);
             $group->delete('/{groupId}/member/{memberId}', \TailgateApi\Actions\Group\DeleteMemberByUserAction::class);
             $group->post('/{groupId}/member/{memberId}/player', \TailgateApi\Actions\Group\AddPlayerByUserAction::class);
+            $group->patch('/{groupId}/player/{playerId}', \TailgateApi\Actions\Group\ChangePlayerOwnerByUserAction::class);
             $group->delete('/{groupId}/player/{playerId}', \TailgateApi\Actions\Group\DeletePlayerByUserAction::class);
             $group->post('/{groupId}/follow', \TailgateApi\Actions\Group\FollowTeamByUserAction::class);
             $group->delete('/{groupId}/follow/{followId}', \TailgateApi\Actions\Group\DeleteFollowByUserAction::class);
@@ -81,6 +82,7 @@ return function (App $app) {
                 $group->patch('/{groupId}/member/{memberId}', \TailgateApi\Actions\Group\UpdateMemberAction::class);
                 $group->delete('/{groupId}/member/{memberId}', \TailgateApi\Actions\Group\DeleteMemberAction::class);
                 $group->post('/{groupId}/member/{memberId}/player', \TailgateApi\Actions\Group\AddPlayerAction::class);
+                $group->patch('/{groupId}/player/{playerId}', \TailgateApi\Actions\Group\ChangePlayerOwnerByUserAction::class);
                 $group->delete('/{groupId}/player/{playerId}', \TailgateApi\Actions\Group\DeletePlayerAction::class);
                 $group->post('/{groupId}/player/{playerId}/score', \TailgateApi\Actions\Group\SubmitScoreAction::class);
                 $group->patch('/{groupId}/score/{scoreId}', \TailgateApi\Actions\Group\UpdateScoreAction::class);
