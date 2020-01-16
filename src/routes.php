@@ -56,6 +56,7 @@ return function (App $app) {
         $group->group('/seasons', function (Group $group) {
             $group->get('', \TailgateApi\Actions\Season\AllSeasonsAction::class);
             $group->get('/{seasonId}', \TailgateApi\Actions\Season\ViewSeasonAction::class);
+            $group->get('/follow/{followId}', \TailgateApi\Actions\Season\AllFollowedGamesAction::class);
         });
 
         // admin access

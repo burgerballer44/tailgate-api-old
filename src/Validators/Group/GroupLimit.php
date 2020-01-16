@@ -8,7 +8,7 @@ use Tailgate\Domain\Model\User\UserId;
 
 class GroupLimit extends AbstractRule
 {
-    const GROUP_LIMIT = 10;
+    const GROUP_LIMIT = 100;
 
     private $memberViewRepository;
 

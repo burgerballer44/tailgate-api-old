@@ -70,12 +70,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/burgerballer44/tailgate.git",
-                "reference": "353f0770567bfd45f51101df0d646b0bac683f1f"
+                "reference": "1939d34b9456fd57c7a9b9e8235c48b60e37d471"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/burgerballer44/tailgate/zipball/353f0770567bfd45f51101df0d646b0bac683f1f",
-                "reference": "353f0770567bfd45f51101df0d646b0bac683f1f",
+                "url": "https://api.github.com/repos/burgerballer44/tailgate/zipball/1939d34b9456fd57c7a9b9e8235c48b60e37d471",
+                "reference": "1939d34b9456fd57c7a9b9e8235c48b60e37d471",
                 "shasum": ""
             },
             "require": {
@@ -115,7 +115,7 @@
                 "source": "https://github.com/burgerballer44/tailgate/tree/master",
                 "issues": "https://github.com/burgerballer44/tailgate/issues"
             },
-            "time": "2020-01-12T06:13:22+00:00"
+            "time": "2020-01-15T02:30:25+00:00"
         },
         {
             "name": "buttercup/protects",
@@ -2528,16 +2528,16 @@
         },
         {
             "name": "tightenco/collect",
-            "version": "v6.9.0",
+            "version": "v6.11.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/tightenco/collect.git",
-                "reference": "67525fa5ebaab40acb69f0507fa91e6bce212d5c"
+                "reference": "b0263d1e2931a272dcf091f1481291ea8ec3ec14"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/tightenco/collect/zipball/67525fa5ebaab40acb69f0507fa91e6bce212d5c",
-                "reference": "67525fa5ebaab40acb69f0507fa91e6bce212d5c",
+                "url": "https://api.github.com/repos/tightenco/collect/zipball/b0263d1e2931a272dcf091f1481291ea8ec3ec14",
+                "reference": "b0263d1e2931a272dcf091f1481291ea8ec3ec14",
                 "shasum": ""
             },
             "require": {
@@ -2574,7 +2574,7 @@
                 "collection",
                 "laravel"
             ],
-            "time": "2019-12-06T22:56:34+00:00"
+            "time": "2020-01-14T17:16:45+00:00"
         },
         {
             "name": "vlucas/phpdotenv",
