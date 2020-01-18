@@ -12,7 +12,7 @@ use Psr\Log\LoggerInterface;
 use TailgateApi\Events\ApiSubscriber;
 use TailgateApi\Events\EventViewSubscriber;
 use TailgateApi\Events\LoggerDomainEventSubscriber;
-use Tailgate\Common\Event\EventPublisherInterface;
+use Burger\EventPublisherInterface;
 use Tailgate\Domain\Model\Group\GroupProjectionInterface;
 use Tailgate\Domain\Model\Season\SeasonProjectionInterface;
 use Tailgate\Domain\Model\Team\TeamProjectionInterface;

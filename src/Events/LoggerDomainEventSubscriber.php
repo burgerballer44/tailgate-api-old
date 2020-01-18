@@ -3,9 +3,9 @@
 namespace TailgateApi\Events;
 
 use Psr\Log\LoggerInterface;
-use Tailgate\Common\Event\Event;
-use Tailgate\Common\Event\EventPublisherInterface;
-use Tailgate\Common\Event\EventSubscriberInterface;
+use Burger\Event;
+use Burger\EventPublisherInterface;
+use Burger\EventSubscriberInterface;
 
 class LoggerDomainEventSubscriber implements EventSubscriberInterface
 {

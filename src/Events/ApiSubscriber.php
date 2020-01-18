@@ -4,8 +4,8 @@ namespace TailgateApi\Events;
 
 use PDO;
 use TailgateApi\Events\UserLoggedIn;
-use Tailgate\Common\Event\EventPublisherInterface;
-use Tailgate\Common\Event\EventSubscriberInterface;
+use Burger\EventPublisherInterface;
+use Burger\EventSubscriberInterface;
 
 class ApiSubscriber implements EventSubscriberInterface
 {

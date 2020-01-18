@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "467ff4204d6ba65947decf20ed326dd7",
+    "content-hash": "259a9125853bd2c77062817584bf0f5c",
     "packages": [
         {
             "name": "bshaffer/oauth2-server-php",
@@ -65,20 +65,64 @@
             "time": "2018-12-04T00:29:32+00:00"
         },
         {
+            "name": "burger/eventpublisher",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/burgerballer44/event-publisher.git",
+                "reference": "2f3b07cbcc1eff1b8967907deb14e917c4a15a10"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/burgerballer44/event-publisher/zipball/2f3b07cbcc1eff1b8967907deb14e917c4a15a10",
+                "reference": "2f3b07cbcc1eff1b8967907deb14e917c4a15a10",
+                "shasum": ""
+            },
+            "require-dev": {
+                "phpunit/phpunit": "^7.5"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Burger\\": "src/"
+                }
+            },
+            "autoload-dev": {
+                "psr-4": {
+                    "Burger\\": "tests/"
+                }
+            },
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Darnell",
+                    "email": "collinsdarnell44@gmail.com"
+                }
+            ],
+            "support": {
+                "source": "https://github.com/burgerballer44/event-publisher/tree/master",
+                "issues": "https://github.com/burgerballer44/event-publisher/issues"
+            },
+            "time": "2020-01-17T01:38:51+00:00"
+        },
+        {
             "name": "burger/tailgate",
             "version": "dev-master",
             "source": {
                 "type": "git",
                 "url": "https://github.com/burgerballer44/tailgate.git",
-                "reference": "1939d34b9456fd57c7a9b9e8235c48b60e37d471"
+                "reference": "51f9e93fb3859b62c4d48b467a592cb0ce1e0528"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/burgerballer44/tailgate/zipball/1939d34b9456fd57c7a9b9e8235c48b60e37d471",
-                "reference": "1939d34b9456fd57c7a9b9e8235c48b60e37d471",
+                "url": "https://api.github.com/repos/burgerballer44/tailgate/zipball/51f9e93fb3859b62c4d48b467a592cb0ce1e0528",
+                "reference": "51f9e93fb3859b62c4d48b467a592cb0ce1e0528",
                 "shasum": ""
             },
             "require": {
+                "burger/eventpublisher": "dev-master",
                 "buttercup/protects": "dev-master",
                 "mathiasverraes/classfunctions": "1.*",
                 "php": "^7.1.3",
@@ -115,7 +159,7 @@
                 "source": "https://github.com/burgerballer44/tailgate/tree/master",
                 "issues": "https://github.com/burgerballer44/tailgate/issues"
             },
-            "time": "2020-01-15T02:30:25+00:00"
+            "time": "2020-01-17T01:49:28+00:00"
         },
         {
             "name": "buttercup/protects",
@@ -2638,7 +2682,8 @@
     "aliases": [],
     "minimum-stability": "dev",
     "stability-flags": {
-        "burger/tailgate": 20
+        "burger/tailgate": 20,
+        "burger/eventpublisher": 20
     },
     "prefer-stable": true,
     "prefer-lowest": false,

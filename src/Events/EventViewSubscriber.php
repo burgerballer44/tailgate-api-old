@@ -4,8 +4,8 @@ namespace TailgateApi\Events;
 
 use Buttercup\Protects\DomainEvent;
 use PDO;
-use Tailgate\Common\Event\EventPublisherInterface;
-use Tailgate\Common\Event\EventSubscriberInterface;
+use Burger\EventPublisherInterface;
+use Burger\EventSubscriberInterface;
 use Tailgate\Domain\Model\Group\GroupDomainEvent;
 use Tailgate\Domain\Model\Season\SeasonDomainEvent;
 use Tailgate\Domain\Model\Team\TeamDomainEvent;

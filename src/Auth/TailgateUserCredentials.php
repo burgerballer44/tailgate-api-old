@@ -6,7 +6,7 @@ use OAuth2\GrantType\UserCredentials;
 use OAuth2\RequestInterface;
 use OAuth2\ResponseInterface;
 use TailgateApi\Events\UserLoggedIn;
-use Tailgate\Common\Event\EventPublisher;
+use Burger\EventPublisher;
 
 // extend oauth2 UserCredentials implementation since we need our implementations
 class TailgateUserCredentials extends UserCredentials
