@@ -9,7 +9,6 @@ use Tailgate\Application\Query\Season\SeasonQuery;
 use Tailgate\Domain\Service\Season\DeleteSeasonHandler;
 use Tailgate\Domain\Service\Season\SeasonQueryHandler;
 
-
 // delete a season
 class DeleteSeasonAction extends AbstractAction
 {   

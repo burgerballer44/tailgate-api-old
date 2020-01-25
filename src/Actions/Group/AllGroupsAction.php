@@ -4,7 +4,6 @@ namespace TailgateApi\Actions\Group;
 
 use Psr\Http\Message\ResponseInterface;
 use TailgateApi\Actions\AbstractAction;
-use Tailgate\Application\Query\Group\AllGroupsQuery;
 use Tailgate\Domain\Service\Group\AllGroupsQueryHandler;
 
 // get all groups
@@ -19,7 +18,7 @@ class AllGroupsAction extends AbstractAction
 
     public function action() : ResponseInterface
     {
-        $groups = $this->allGroupsQueryHandler->handle(new AllGroupsQuery());
+        $groups = $this->allGroupsQueryHandler->handle();
         return $this->respondWithData($groups);
     }
 }

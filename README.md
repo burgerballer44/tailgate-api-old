@@ -1,16 +1,14 @@
 # Tailgate API
 
-#### Composer
+## Composer
 
 Install the dependencies by running `composer install`.
 
-
-#### Environment
+## Environment
 
 Create a .env file by copying and the .env.example file. Update the values accordingly in the new .env file.
 
-
-#### Phinx Migration
+## Phinx Migration
 
 Create a mysql database called tailgate. Update the .env accordingly.
 

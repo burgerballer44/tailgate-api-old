@@ -15,10 +15,8 @@ class DeleteUserAction extends AbstractAction
     private $deleteUserHandler;
     private $userQueryHandler;
 
-    public function __construct(
-        DeleteUserHandler $deleteUserHandler,
-        UserQueryHandler $userQueryHandler
-    ) {
+    public function __construct(DeleteUserHandler $deleteUserHandler, UserQueryHandler $userQueryHandler)
+    {
         $this->deleteUserHandler = $deleteUserHandler;
         $this->userQueryHandler = $userQueryHandler;
     }

@@ -9,7 +9,6 @@ use Tailgate\Application\Query\Team\TeamQuery;
 use Tailgate\Domain\Service\Team\DeleteTeamHandler;
 use Tailgate\Domain\Service\Team\TeamQueryHandler;
 
-
 // delete a team
 class DeleteTeamAction extends AbstractAction
 {   
