@@ -26,7 +26,7 @@ class CreateGroupCommandValidator extends AbstractRespectValidator
         V::with("TailgateApi\Validators\User\\");
         V::with("TailgateApi\Validators\Group\\");
 
-        $this->rules['name'] = V::notEmpty()->stringType()->noWhitespace()->length(4, 30)->setName('Name');
+        $this->rules['name'] = V::notEmpty()->stringType()->length(4, 30)->setName('Name');
         $this->rules['ownerId'] = V::notEmpty()->stringType()->UserExist($this->userViewRepository)->GroupLimit($this->memberViewRepository)->setName('Owner');
     }
 }
