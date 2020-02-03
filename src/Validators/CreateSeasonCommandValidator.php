@@ -9,7 +9,7 @@ class CreateSeasonCommandValidator extends AbstractRespectValidator
 {
     protected function addRules($command)
     {
-        $this->rules['name'] = V::notEmpty()->alnum()->length(4, 100)->setName('Name');
+        $this->rules['name'] = V::notEmpty()->stringType()->length(4, 100)->setName('Name');
         $this->rules['sport'] = V::notEmpty()->in(Season::getValidSports())->setName('Sport');
         $this->rules['seasonType'] = V::notEmpty()->in(Season::getValidSeasonTypes())->setName('Season Type');
         $this->rules['seasonStart'] = V::notEmpty()->date('Y-m-d')->setName('Start of Season');
