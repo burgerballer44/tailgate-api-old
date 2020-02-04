@@ -113,12 +113,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/burgerballer44/tailgate.git",
-                "reference": "8823ebcae0c1f5fb94509f3f5e0bfe2276aa6a10"
+                "reference": "34c98e1e8c76f2ad74f099c0adaa46931c9102da"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/burgerballer44/tailgate/zipball/8823ebcae0c1f5fb94509f3f5e0bfe2276aa6a10",
-                "reference": "8823ebcae0c1f5fb94509f3f5e0bfe2276aa6a10",
+                "url": "https://api.github.com/repos/burgerballer44/tailgate/zipball/34c98e1e8c76f2ad74f099c0adaa46931c9102da",
+                "reference": "34c98e1e8c76f2ad74f099c0adaa46931c9102da",
                 "shasum": ""
             },
             "require": {
@@ -159,7 +159,7 @@
                 "source": "https://github.com/burgerballer44/tailgate/tree/master",
                 "issues": "https://github.com/burgerballer44/tailgate/issues"
             },
-            "time": "2020-02-04T01:08:32+00:00"
+            "time": "2020-02-04T02:27:36+00:00"
         },
         {
             "name": "buttercup/protects",
