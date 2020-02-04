@@ -113,12 +113,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/burgerballer44/tailgate.git",
-                "reference": "6ebd5a4c9e890e9c8f9d0674f242437010bd7f70"
+                "reference": "8823ebcae0c1f5fb94509f3f5e0bfe2276aa6a10"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/burgerballer44/tailgate/zipball/6ebd5a4c9e890e9c8f9d0674f242437010bd7f70",
-                "reference": "6ebd5a4c9e890e9c8f9d0674f242437010bd7f70",
+                "url": "https://api.github.com/repos/burgerballer44/tailgate/zipball/8823ebcae0c1f5fb94509f3f5e0bfe2276aa6a10",
+                "reference": "8823ebcae0c1f5fb94509f3f5e0bfe2276aa6a10",
                 "shasum": ""
             },
             "require": {
@@ -156,10 +156,10 @@
             ],
             "description": "score prediction with friends",
             "support": {
-                "source": "https://github.com/burgerballer44/tailgate/tree/1.0",
+                "source": "https://github.com/burgerballer44/tailgate/tree/master",
                 "issues": "https://github.com/burgerballer44/tailgate/issues"
             },
-            "time": "2020-01-25T03:09:00+00:00"
+            "time": "2020-02-04T01:08:32+00:00"
         },
         {
             "name": "buttercup/protects",
@@ -2572,7 +2572,7 @@
         },
         {
             "name": "tightenco/collect",
-            "version": "v6.13.0",
+            "version": "v6.13.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/tightenco/collect.git",
