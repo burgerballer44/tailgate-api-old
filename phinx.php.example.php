@@ -26,15 +26,6 @@ return [
             "port" => 3306,
             "charset" => "utf8mb4",
         ],
-        "testing" => [
-            "adapter" => "mysql",
-            "host" => "localhost",
-            "name" => "tailgate_test",
-            "user" => "root",
-            "pass" => "",
-            "port" => 3306,
-            "charset" => "utf8mb4",
-        ],
     ],
     "version_order" => "creation"
 ];
