@@ -2,7 +2,7 @@
 
 ## Composer
 
-Install the dependencies by running `composer install`.
+Install the dependencies by running `composer install`. Run `composer install --no-dev` for production environments.
 
 ## Environment
 
