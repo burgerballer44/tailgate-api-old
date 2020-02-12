@@ -113,12 +113,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/burgerballer44/tailgate.git",
-                "reference": "34c98e1e8c76f2ad74f099c0adaa46931c9102da"
+                "reference": "13be48c80a6682c6552db17eeabdd72f4c0ec611"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/burgerballer44/tailgate/zipball/34c98e1e8c76f2ad74f099c0adaa46931c9102da",
-                "reference": "34c98e1e8c76f2ad74f099c0adaa46931c9102da",
+                "url": "https://api.github.com/repos/burgerballer44/tailgate/zipball/13be48c80a6682c6552db17eeabdd72f4c0ec611",
+                "reference": "13be48c80a6682c6552db17eeabdd72f4c0ec611",
                 "shasum": ""
             },
             "require": {
@@ -159,7 +159,7 @@
                 "source": "https://github.com/burgerballer44/tailgate/tree/master",
                 "issues": "https://github.com/burgerballer44/tailgate/issues"
             },
-            "time": "2020-02-04T02:27:36+00:00"
+            "time": "2020-02-08T01:43:42+00:00"
         },
         {
             "name": "buttercup/protects",
@@ -546,21 +546,23 @@
         },
         {
             "name": "fig/http-message-util",
-            "version": "1.1.3",
+            "version": "1.1.4",
             "source": {
                 "type": "git",
                 "url": "https://github.com/php-fig/http-message-util.git",
-                "reference": "35b19404371b31b3a43823c755398c48c9966db4"
+                "reference": "3242caa9da7221a304b8f84eb9eaddae0a7cf422"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/php-fig/http-message-util/zipball/35b19404371b31b3a43823c755398c48c9966db4",
-                "reference": "35b19404371b31b3a43823c755398c48c9966db4",
+                "url": "https://api.github.com/repos/php-fig/http-message-util/zipball/3242caa9da7221a304b8f84eb9eaddae0a7cf422",
+                "reference": "3242caa9da7221a304b8f84eb9eaddae0a7cf422",
                 "shasum": ""
             },
             "require": {
-                "php": "^5.3 || ^7.0",
-                "psr/http-message": "^1.0"
+                "php": "^5.3 || ^7.0"
+            },
+            "suggest": {
+                "psr/http-message": "The package containing the PSR-7 interfaces"
             },
             "type": "library",
             "extra": {
@@ -592,7 +594,7 @@
                 "request",
                 "response"
             ],
-            "time": "2018-11-19T16:19:58+00:00"
+            "time": "2020-02-05T20:36:27+00:00"
         },
         {
             "name": "jeremeamia/SuperClosure",
@@ -2572,7 +2574,7 @@
         },
         {
             "name": "tightenco/collect",
-            "version": "v6.13.1",
+            "version": "v6.15.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/tightenco/collect.git",
