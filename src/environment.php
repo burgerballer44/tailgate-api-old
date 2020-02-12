@@ -8,20 +8,20 @@ $dotenv->load();
 
 // these variables are required
 $dotenv->required([
-    'MODE',
-    'DISPLAY_ERROR_DETAILS',
-    'LOG_ERRORS',
-    'DB_CONNECTION',
-    'DB_HOST',
-    'DB_PORT',
-    'DB_DATABASE',
-    'DB_USERNAME',
-    'DB_PASSWORD',
+    'API_MODE',
+    'API_DISPLAY_ERROR_DETAILS',
+    'API_LOG_ERRORS',
+    'API_DB_CONNECTION',
+    'API_DB_HOST',
+    'API_DB_PORT',
+    'API_DB_DATABASE',
+    'API_DB_USERNAME',
+    'API_DB_PASSWORD',
 ]);
 
 // set constants based on the environment we want
 // should be 'dev' or 'prod'
-$mode = getenv('MODE');
+$mode = getenv('API_MODE');
 $devMode = true;
 $prodMode = false;
 if ('dev' != $mode) {

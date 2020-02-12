@@ -12,9 +12,9 @@ return function (ContainerBuilder $containerBuilder) {
         'settings' => [
 
             'errorHandlerMiddleware' => [
-                'displayErrorDetails' => filter_var(getenv('DISPLAY_ERROR_DETAILS'), FILTER_VALIDATE_BOOLEAN),
-                'logErrors' => filter_var(getenv('LOG_ERRORS'), FILTER_VALIDATE_BOOLEAN),
-                'logErrorDetails' => filter_var(getenv('LOG_ERRORS'), FILTER_VALIDATE_BOOLEAN),
+                'displayErrorDetails' => filter_var(getenv('API_DISPLAY_ERROR_DETAILS'), FILTER_VALIDATE_BOOLEAN),
+                'logErrors' => filter_var(getenv('API_LOG_ERRORS'), FILTER_VALIDATE_BOOLEAN),
+                'logErrorDetails' => filter_var(getenv('API_LOG_ERRORS'), FILTER_VALIDATE_BOOLEAN),
             ],
 
             // how long should the token last for in seconds
@@ -22,12 +22,12 @@ return function (ContainerBuilder $containerBuilder) {
 
             // pdo connection to database
             'pdo' => [
-                'connection' => getenv('DB_CONNECTION'),
-                'host' => getenv('DB_HOST'),
-                'port' => getenv('DB_PORT'),
-                'database' => getenv('DB_DATABASE'),
-                'username' => getenv('DB_USERNAME'),
-                'password' => getenv('DB_PASSWORD'),
+                'connection' => getenv('API_DB_CONNECTION'),
+                'host' => getenv('API_DB_HOST'),
+                'port' => getenv('API_DB_PORT'),
+                'database' => getenv('API_DB_DATABASE'),
+                'username' => getenv('API_DB_USERNAME'),
+                'password' => getenv('API_DB_PASSWORD'),
             ],
 
             // logger
