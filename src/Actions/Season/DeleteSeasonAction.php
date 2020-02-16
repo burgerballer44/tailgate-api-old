@@ -20,13 +20,13 @@ class DeleteSeasonAction extends AbstractAction
         SeasonQueryHandler $seasonQueryHandler
     ) {
         $this->deleteSeasonHandler = $deleteSeasonHandler;
-        $this->SeasonQueryHandler = $seasonQueryHandler;
+        $this->seasonQueryHandler = $seasonQueryHandler;
     }
 
     public function action() : ResponseInterface
     {
         extract($this->args);
-        $season = $this->SeasonQueryHandler->handle(new SeasonQuery($seasonId));
+        $season = $this->seasonQueryHandler->handle(new SeasonQuery($seasonId));
         $this->deleteSeasonHandler->handle(new DeleteSeasonCommand($seasonId));
         return $this->respond();
     }

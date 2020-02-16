@@ -13,16 +13,16 @@ use TailgateApi\Events\ApiSubscriber;
 use TailgateApi\Events\EventViewSubscriber;
 use TailgateApi\Events\LoggerDomainEventSubscriber;
 use Burger\EventPublisherInterface;
-use Tailgate\Domain\Model\Group\GroupProjectionInterface;
-use Tailgate\Domain\Model\Season\SeasonProjectionInterface;
-use Tailgate\Domain\Model\Team\TeamProjectionInterface;
-use Tailgate\Domain\Model\User\UserProjectionInterface;
+use Tailgate\Infrastructure\Persistence\Projection\GroupProjectionInterface;
+use Tailgate\Infrastructure\Persistence\Projection\SeasonProjectionInterface;
+use Tailgate\Infrastructure\Persistence\Projection\TeamProjectionInterface;
+use Tailgate\Infrastructure\Persistence\Projection\UserProjectionInterface;
 use Tailgate\Infrastructure\Persistence\Event\EventStoreInterface;
-use Tailgate\Infrastructure\Persistence\Event\GroupProjectorEventSubscriber;
-use Tailgate\Infrastructure\Persistence\Event\PersistDomainEventSubscriber;
-use Tailgate\Infrastructure\Persistence\Event\SeasonProjectorEventSubscriber;
-use Tailgate\Infrastructure\Persistence\Event\TeamProjectorEventSubscriber;
-use Tailgate\Infrastructure\Persistence\Event\UserProjectorEventSubscriber;
+use Tailgate\Infrastructure\Persistence\Event\Subscriber\Projection\GroupProjectorEventSubscriber;
+use Tailgate\Infrastructure\Persistence\Event\Subscriber\Projection\PersistDomainEventSubscriber;
+use Tailgate\Infrastructure\Persistence\Event\Subscriber\Projection\SeasonProjectorEventSubscriber;
+use Tailgate\Infrastructure\Persistence\Event\Subscriber\Projection\TeamProjectorEventSubscriber;
+use Tailgate\Infrastructure\Persistence\Event\Subscriber\Projection\UserProjectorEventSubscriber;
 
 
 // add subscribers

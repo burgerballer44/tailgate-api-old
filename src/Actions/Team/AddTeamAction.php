@@ -23,7 +23,8 @@ class AddTeamAction extends AbstractAction
 
         $command = new AddTeamCommand(
             $parsedBody['designation'] ?? '',
-            $parsedBody['mascot'] ?? ''
+            $parsedBody['mascot'] ?? '',
+            $parsedBody['sport'] ?? ''
         );
 
         $this->addTeamHandler->handle($command);

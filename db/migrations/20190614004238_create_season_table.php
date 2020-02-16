@@ -19,6 +19,8 @@ class CreateSeasonTable extends AbstractMigration
             ->addColumn('season_start', 'datetime')
             ->addColumn('season_end', 'datetime')
             ->addColumn('created_at', 'datetime')
+            ->addIndex(['sport'])
+            ->addIndex(['type'])
             ->save();
     }
 

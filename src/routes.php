@@ -49,12 +49,14 @@ return function (App $app) {
         // teams
         $group->group('/teams', function (Group $group) {
             $group->get('', \TailgateApi\Actions\Team\AllTeamsAction::class);
+            $group->get('/sport', \TailgateApi\Actions\Team\ViewTeamsBySportAction::class);
             $group->get('/{teamId}', \TailgateApi\Actions\Team\ViewTeamAction::class);
         });
 
         // seasons
         $group->group('/seasons', function (Group $group) {
             $group->get('', \TailgateApi\Actions\Season\AllSeasonsAction::class);
+            $group->get('/sport', \TailgateApi\Actions\Season\ViewSeasonsBySportAction::class);
             $group->get('/{seasonId}', \TailgateApi\Actions\Season\ViewSeasonAction::class);
             $group->get('/follow/{followId}', \TailgateApi\Actions\Season\AllFollowedGamesAction::class);
         });
